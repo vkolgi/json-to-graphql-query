@@ -1,2 +1,2 @@
 
-export * from './jsonToGraphQL';
+export * from './jsonToGraphQLQuery';

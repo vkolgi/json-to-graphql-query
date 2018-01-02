@@ -35,7 +35,7 @@ export interface IJsonToGraphQLOptions {
     pretty?: boolean;
 }
 
-export function jsonToGraphQL(query: any, options: IJsonToGraphQLOptions = {}) {
+export function jsonToGraphQLQuery(query: any, options: IJsonToGraphQLOptions = {}) {
     if (!query || typeof query != 'object') {
         throw new Error('query object not specified');
     }

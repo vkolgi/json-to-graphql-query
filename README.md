@@ -21,7 +21,7 @@ Supported options:
 ### Simple Query
 
 ```typescript
-import jsonToGraphQLQuery from 'json-to-graphql-query';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
 const query = {
     query: {
@@ -50,7 +50,7 @@ query {
 ### Query with arguments
 
 ```typescript
-import jsonToGraphQLQuery from 'json-to-graphql-query';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
 const query = {
     query: {
@@ -83,7 +83,7 @@ query {
 ### Query with nested objects
 
 ```typescript
-import jsonToGraphQLQuery from 'json-to-graphql-query';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
 const query = {
     query: {

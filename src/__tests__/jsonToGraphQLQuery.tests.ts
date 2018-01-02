@@ -1,24 +1,24 @@
 
 import { expect } from 'chai';
-import { jsonToGraphQL } from '../jsonToGraphQL';
+import { jsonToGraphQLQuery } from '../';
 
 describe('jsonToGraphQL()', () => {
 
     it('throws if no query object is specified', () => {
         expect(() => {
-            (jsonToGraphQL as any)();
+            (jsonToGraphQLQuery as any)();
         }).to.throw('query object not specified');
     });
 
     it('throws if query is not an object', () => {
         expect(() => {
-            jsonToGraphQL('not a query object');
+            jsonToGraphQLQuery('not a query object');
         }).to.throw('query object not specified');
     });
 
     it('throws if object has no keys', () => {
         expect(() => {
-            jsonToGraphQL({});
+            jsonToGraphQLQuery({});
         }).to.throw('query object has no data');
     });
 
@@ -32,7 +32,7 @@ describe('jsonToGraphQL()', () => {
                 }
             }
         };
-        expect(jsonToGraphQL(query, { pretty: true })).to.equal(
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
 `query {
     Posts {
         id
@@ -56,7 +56,7 @@ describe('jsonToGraphQL()', () => {
                 }
             }
         };
-        expect(jsonToGraphQL(query, { pretty: true })).to.equal(
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
 `query {
     Posts (orderBy: "post_date", userId: 12) {
         id
@@ -80,7 +80,7 @@ describe('jsonToGraphQL()', () => {
                 }
             }
         };
-        expect(jsonToGraphQL(query, { pretty: true })).to.equal(
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
 `query {
     Posts {
         id
@@ -115,7 +115,7 @@ describe('jsonToGraphQL()', () => {
                 }
             }
         };
-        expect(jsonToGraphQL(query, { pretty: true })).to.equal(
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
 `query {
     Posts (arg1: 20, arg2: "flibble") {
         id
