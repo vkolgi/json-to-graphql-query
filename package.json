@@ -1,0 +1,25 @@
+{
+  "name": "json-to-graphql",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tslint -p . && tsc",
+    "test": "mocha -r ts-node/register --recursive \"./src/**/__tests__/*\""
+  },
+  "typings": "lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dupski/json-to-graphql.git"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.0.10",
+    "@types/mocha": "^2.2.45",
+    "chai": "^4.1.2",
+    "mocha": "^4.1.0",
+    "sinon": "^4.1.3",
+    "ts-node": "^4.1.0",
+    "tslint": "5.8.0",
+    "typescript": "2.6.2"
+  }
+}
