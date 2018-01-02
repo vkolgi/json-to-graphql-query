@@ -1,5 +1,5 @@
 {
-  "name": "json-to-graphql",
+  "name": "json-to-graphql-query",
   "version": "0.1.0",
   "main": "lib/index.js",
   "license": "MIT",
@@ -10,7 +10,7 @@
   "typings": "lib/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dupski/json-to-graphql.git"
+    "url": "https://github.com/dupski/json-to-graphql-query.git"
   },
   "devDependencies": {
     "@types/chai": "^4.0.10",

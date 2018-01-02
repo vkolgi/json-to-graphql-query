@@ -1,4 +1,4 @@
-# json-to-graphql
+# json-to-graphql-query
 
 This is a simple module that takes a JavaScript object and turns it into a
 GraphQL query to be sent to a GraphQL server.
@@ -8,15 +8,20 @@ Mainly useful for applications that need to generate graphql queries dynamically
 ## Installation
 
 ```
-npm install json-to-graphql
+npm install json-to-graphql-query
 ```
 
 ## Usage
 
+**jsonToGraphQLQuery(** queryObject: object, options?: object **)**
+
+Supported options:
+ * **pretty**: boolean - Set to `true` to enable pretty-printed output
+
 ### Simple Query
 
 ```typescript
-import { jsonToGraphQL } from 'json-to-graphql';
+import jsonToGraphQLQuery from 'json-to-graphql-query';
 
 const query = {
     query: {
@@ -27,7 +32,7 @@ const query = {
         }
     }
 };
-const graphql_query = jsonToGraphQL(query, { pretty: true });
+const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
 ```
 
 Resulting `graphql_query`
@@ -45,7 +50,7 @@ query {
 ### Query with arguments
 
 ```typescript
-import { jsonToGraphQL } from 'json-to-graphql';
+import jsonToGraphQLQuery from 'json-to-graphql-query';
 
 const query = {
     query: {
@@ -60,7 +65,7 @@ const query = {
         }
     }
 };
-const graphql_query = jsonToGraphQL(query, { pretty: true });
+const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
 ```
 
 Resulting `graphql_query`
@@ -78,7 +83,7 @@ query {
 ### Query with nested objects
 
 ```typescript
-import { jsonToGraphQL } from 'json-to-graphql';
+import jsonToGraphQLQuery from 'json-to-graphql-query';
 
 const query = {
     query: {
@@ -93,7 +98,7 @@ const query = {
         }
     }
 };
-const graphql_query = jsonToGraphQL(query, { pretty: true });
+const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
 ```
 
 Resulting `graphql_query`
