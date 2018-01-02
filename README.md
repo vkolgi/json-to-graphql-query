@@ -26,8 +26,8 @@ const query = {
             post_date: true
         }
     }
-}
-const graphql_query = jsonToGraphQL(query);
+};
+const graphql_query = jsonToGraphQL(query, { pretty: true });
 ```
 
 Resulting `graphql_query`
@@ -35,8 +35,8 @@ Resulting `graphql_query`
 ```graphql
 query {
     Posts {
-        id,
-        title,
+        id
+        title
         post_date
     }
 }
@@ -53,14 +53,14 @@ const query = {
             __args: {
                 orderBy: 'post_date',
                 userId: 12
-            }
+            },
             id: true,
             title: true,
             post_date: true
         }
     }
-}
-const graphql_query = jsonToGraphQL(query);
+};
+const graphql_query = jsonToGraphQL(query, { pretty: true });
 ```
 
 Resulting `graphql_query`
@@ -68,8 +68,8 @@ Resulting `graphql_query`
 ```graphql
 query {
     Posts (orderBy: "post_date", userId: 12) {
-        id,
-        title,
+        id
+        title
         post_date
     }
 }
@@ -92,21 +92,20 @@ const query = {
             }
         }
     }
-}
-const graphql_query = jsonToGraphQL(query);
+};
+const graphql_query = jsonToGraphQL(query, { pretty: true });
 ```
 
 Resulting `graphql_query`
 
 ```graphql
 query {
-    Posts (orderBy: "post_date", userId: 12) {
-        id,
-        name,
-        post_date,
+    Posts {
+        id
+        title
         comments {
-            id,
-            comment,
+            id
+            comment
             user
         }
     }
