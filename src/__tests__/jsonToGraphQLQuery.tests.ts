@@ -129,4 +129,21 @@ describe('jsonToGraphQL()', () => {
 }`);
     });
 
+    it('works with pretty mode turned off', () => {
+        const query = {
+            query: {
+                Posts: {
+                    __args: {
+                        arg1: 20,
+                        arg2: 'flibble'
+                    },
+                    id: true,
+                    title: true
+                }
+            }
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { Posts (arg1: 20, arg2: "flibble") { id title } }'
+        );
+    });
 });

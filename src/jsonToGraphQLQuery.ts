@@ -46,15 +46,16 @@ export function jsonToGraphQLQuery(query: any, options: IJsonToGraphQLOptions = 
     const queryLines: Array<[string, number]> = [];
     convertQuery(query, 0, queryLines);
 
-    if (options.pretty) {
-        let output = '';
-        queryLines.forEach(([line, level]) => {
+    let output = '';
+    queryLines.forEach(([line, level]) => {
+        if (options.pretty) {
             if (output) { output += '\n'; }
             output += getIndent(level) + line;
-        });
-        return output;
-    }
-    else {
-        return queryLines.join(' ');
-    }
+        }
+        else {
+            if (output) { output += ' '; }
+            output += line;
+        }
+    });
+    return output;
 }
