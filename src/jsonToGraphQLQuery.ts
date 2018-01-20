@@ -1,8 +1,23 @@
 
+function stringify(obj_from_json: any) {
+    // Cheers to Derek: https://stackoverflow.com/questions/11233498/json-stringify-without-quotes-on-properties
+    if (typeof obj_from_json !== 'object' || Array.isArray(obj_from_json)) {
+        // not an object, stringify using native function
+        return JSON.stringify(obj_from_json);
+    }
+    // Implements recursive object serialization according to JSON spec
+    // but without quotes around the keys.
+    const props: string = Object
+        .keys(obj_from_json)
+        .map((key) => `${key}: ${stringify(obj_from_json[key])}`)
+        .join(', ');
+    return `{${props}}`;
+}
+
 function buildArgs(argsObj: any): string {
     const args = [];
     for (const argName in argsObj) {
-        args.push(`${argName}: ${JSON.stringify(argsObj[argName])}`);
+        args.push(`${argName}: ${stringify(argsObj[argName])}`);
     }
     return args.join(', ');
 }

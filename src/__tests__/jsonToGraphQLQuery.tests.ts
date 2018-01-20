@@ -42,7 +42,7 @@ describe('jsonToGraphQL()', () => {
 }`);
     });
 
-    it('converts a query with arguments', () => {
+    it('converts a query with simple arguments', () => {
         const query = {
             query: {
                 Posts: {
@@ -59,6 +59,33 @@ describe('jsonToGraphQL()', () => {
         expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
 `query {
     Posts (orderBy: "post_date", userId: 12) {
+        id
+        title
+        post_date
+    }
+}`);
+    });
+
+    it('converts a query with JSON arguments', () => {
+        const query = {
+            query: {
+                Posts: {
+                    __args: {
+                        where: {
+                            published: true,
+                            rating: { _gt: 3 }
+                        },
+                        orderBy: 'post_date'
+                    },
+                    id: true,
+                    title: true,
+                    post_date: true
+                }
+            }
+        };
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
+`query {
+    Posts (where: {published: true, rating: {_gt: 3}}, orderBy: "post_date") {
         id
         title
         post_date

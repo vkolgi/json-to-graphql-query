@@ -11,6 +11,12 @@ Mainly useful for applications that need to generate graphql queries dynamically
 npm install json-to-graphql-query
 ```
 
+## Features
+
+ * Converts a JavaScript object to a GraphQL Query
+ * Supports nested objects & arguments
+ * Supports JSON input types for arguments (see arguments example below)
+
 ## Usage
 
 **jsonToGraphQLQuery(** queryObject: object, options?: object **)**
@@ -56,8 +62,8 @@ const query = {
     query: {
         Posts: {
             __args: {
-                orderBy: 'post_date',
-                userId: 12
+                where: { id: 2 }
+                orderBy: 'post_date'
             },
             id: true,
             title: true,
@@ -72,7 +78,7 @@ Resulting `graphql_query`
 
 ```graphql
 query {
-    Posts (orderBy: "post_date", userId: 12) {
+    Posts (where: {id: 2}, orderBy: "post_date") {
         id
         title
         post_date
