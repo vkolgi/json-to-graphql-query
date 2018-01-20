@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tslint -p . && tsc",
-    "test": "mocha -r ts-node/register --recursive \"./src/**/__tests__/*\""
+    "test": "mocha -r ts-node/register --recursive \"./src/**/__tests__/*\"",
+    "prepublish": "npm run build && npm run test"
   },
   "typings": "lib/index.d.ts",
   "repository": {
