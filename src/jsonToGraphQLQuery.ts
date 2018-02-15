@@ -30,14 +30,22 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>)
     for (const key in node) {
         if (key != '__args') {
             if (typeof node[key] == 'object') {
+                const fieldCount = Object.keys(node[key]).length;
+                let token: string;
+                let subFields: boolean;
                 if (typeof node[key].__args == 'object') {
-                    output.push([`${key} (${buildArgs(node[key].__args)}) {`, level]);
+                    token = `${key} (${buildArgs(node[key].__args)})`;
+                    subFields = fieldCount > 1;
                 }
                 else {
-                    output.push([`${key} {`, level]);
+                    token = `${key}`;
+                    subFields = fieldCount > 0;
                 }
+                output.push([token + (subFields ? ' {' : ''), level]);
                 convertQuery(node[key], level + 1, output);
-                output.push(['}', level]);
+                if (subFields) {
+                    output.push(['}', level]);
+                }
             }
             else {
                 output.push([`${key}`, level]);

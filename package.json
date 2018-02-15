@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tslint -p . && tsc",
     "test": "mocha -r ts-node/register --recursive \"./src/**/__tests__/*\"",
+    "test-watch": "mocha -r ts-node/register --recursive \"./src/**/__tests__/*\" --watch --watch-extensions ts,tsx",
     "prepublish": "npm run build && npm run test"
   },
   "typings": "lib/index.d.ts",
