@@ -112,7 +112,7 @@ describe('jsonToGraphQL()', () => {
         };
         expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
 `query {
-    Posts (or: [{published: true},{rating: [{_gt: 3}]}], orderBy: "post_date") {
+    Posts (or: [{published: true}, {rating: [{_gt: 3}]}], orderBy: "post_date") {
         id
         title
         post_date

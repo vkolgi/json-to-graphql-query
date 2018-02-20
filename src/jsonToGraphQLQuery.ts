@@ -6,7 +6,7 @@ function stringify(obj_from_json: any): string {
         return JSON.stringify(obj_from_json);
     }
     else if (Array.isArray(obj_from_json)) {
-        return `[${obj_from_json.map((item) => stringify(item)).join(',')}]`;
+        return `[${obj_from_json.map((item) => stringify(item)).join(', ')}]`;
     }
     // Implements recursive object serialization according to JSON spec
     // but without quotes around the keys.
