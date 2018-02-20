@@ -93,6 +93,33 @@ describe('jsonToGraphQL()', () => {
 }`);
     });
 
+    it('converts a query with JSON arguments containing arrays of objects', () => {
+        const query = {
+            query: {
+                Posts: {
+                    __args: {
+                        or: [
+                            { published: true },
+                            { rating: [{ _gt: 3 }] }
+                        ],
+                        orderBy: 'post_date'
+                    },
+                    id: true,
+                    title: true,
+                    post_date: true
+                }
+            }
+        };
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
+`query {
+    Posts (or: [{published: true},{rating: [{_gt: 3}]}], orderBy: "post_date") {
+        id
+        title
+        post_date
+    }
+}`);
+    });
+
     it('converts a query with nested objects', () => {
         const query = {
             query: {

@@ -1,9 +1,12 @@
 
-function stringify(obj_from_json: any) {
+function stringify(obj_from_json: any): string {
     // Cheers to Derek: https://stackoverflow.com/questions/11233498/json-stringify-without-quotes-on-properties
-    if (typeof obj_from_json !== 'object' || Array.isArray(obj_from_json)) {
+    if (typeof obj_from_json !== 'object') {
         // not an object, stringify using native function
         return JSON.stringify(obj_from_json);
+    }
+    else if (Array.isArray(obj_from_json)) {
+        return `[${obj_from_json.map((item) => stringify(item)).join(',')}]`;
     }
     // Implements recursive object serialization according to JSON spec
     // but without quotes around the keys.
