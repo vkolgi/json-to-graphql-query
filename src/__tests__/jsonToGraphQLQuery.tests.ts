@@ -120,6 +120,32 @@ describe('jsonToGraphQL()', () => {
 }`);
     });
 
+    it('converts a query with null arguments and nested nulls', () => {
+        const query = {
+            query: {
+                Posts: {
+                    __args: {
+                        where: {
+                            id: null,
+                        },
+                        orderBy: null
+                    },
+                    id: true,
+                    title: true,
+                    post_date: true
+                }
+            }
+        } as any;
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
+`query {
+    Posts (where: {id: null}, orderBy: null) {
+        id
+        title
+        post_date
+    }
+}`);
+    });
+
     it('converts a query with nested objects', () => {
         const query = {
             query: {

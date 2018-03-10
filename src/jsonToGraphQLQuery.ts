@@ -1,7 +1,7 @@
 
 function stringify(obj_from_json: any): string {
     // Cheers to Derek: https://stackoverflow.com/questions/11233498/json-stringify-without-quotes-on-properties
-    if (typeof obj_from_json !== 'object') {
+    if (typeof obj_from_json !== 'object' || obj_from_json === null) {
         // not an object, stringify using native function
         return JSON.stringify(obj_from_json);
     }
