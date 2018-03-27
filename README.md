@@ -56,14 +56,15 @@ query {
 ### Query with arguments
 
 ```typescript
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import { jsonToGraphQLQuery, EnumType } from 'json-to-graphql-query';
 
 const query = {
     query: {
         Posts: {
             __args: {
                 where: { id: 2 }
-                orderBy: 'post_date'
+                orderBy: 'post_date',
+                status: new EnumType('PUBLISHED')
             },
             id: true,
             title: true,
@@ -78,7 +79,7 @@ Resulting `graphql_query`
 
 ```graphql
 query {
-    Posts (where: {id: 2}, orderBy: "post_date") {
+    Posts (where: {id: 2}, orderBy: "post_date", status: PUBLISHED) {
         id
         title
         post_date
