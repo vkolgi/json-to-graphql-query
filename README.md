@@ -14,8 +14,11 @@ npm install json-to-graphql-query
 ## Features
 
  * Converts a JavaScript object to a GraphQL Query
- * Supports nested objects & arguments
- * Supports JSON input types for arguments (see arguments example below)
+ * Full support for nested query nodes and arguments
+ * Support for Enum values
+ * Supports JSON input types for arguments
+
+See usage examples below :)
 
 ## Usage
 

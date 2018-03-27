@@ -89,5 +89,5 @@ export function jsonToGraphQLQuery(query: any, options: IJsonToGraphQLOptions = 
 }
 
 export class EnumType {
-  constructor(public value: string) {}
+    constructor(public value: string) {}
 }
