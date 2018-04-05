@@ -16,6 +16,7 @@ function stringify(obj_from_json: any): string {
         .keys(obj_from_json)
         .map((key) => `${key}: ${stringify(obj_from_json[key])}`)
         .join(', ');
+
     return `{${props}}`;
 }
 
@@ -33,11 +34,12 @@ function getIndent(level: number): string {
 
 function convertQuery(node: any, level: number, output: Array<[string, number]>) {
     for (const key in node) {
-        if (key != '__args') {
+        if (key != '__args' && key != '__alias') {
             if (typeof node[key] == 'object') {
                 const fieldCount = Object.keys(node[key]).length;
                 let token: string;
                 let subFields: boolean;
+
                 if (typeof node[key].__args == 'object') {
                     token = `${key} (${buildArgs(node[key].__args)})`;
                     subFields = fieldCount > 1;
@@ -46,13 +48,18 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>)
                     token = `${key}`;
                     subFields = fieldCount > 0;
                 }
+
+                if (typeof node[key].__alias == 'string') {
+                    token = `${node[key].__alias}:${token}`;
+                }
+
                 output.push([token + (subFields ? ' {' : ''), level]);
                 convertQuery(node[key], level + 1, output);
                 if (subFields) {
                     output.push(['}', level]);
                 }
             }
-            else {
+            else if (node[key] !== false) {
                 output.push([`${key}`, level]);
             }
         }

@@ -127,6 +127,76 @@ query {
 }
 ```
 
+### Query with disabled fields
+
+```typescript
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+
+const query = {
+    query: {
+        Posts: {
+            id: true,
+            title: false,
+            comments: {
+                id: true,
+                comment: false,
+                user: true
+            }
+        },
+        User: false
+    }
+};
+const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
+```
+
+Resulting `graphql_query`
+
+```graphql
+query {
+    Posts {
+        id
+        comments {
+            id
+            user
+        }
+    }
+}
+```
+
+### Use aliases
+
+```typescript
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+
+const query = {
+    query: {
+        Posts: {
+            __alias: 'allPosts',
+            id: true,
+            comments: {
+                id: true,
+                comment: true
+            }
+        }
+    }
+};
+const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
+```
+
+Resulting `graphql_query`
+
+```graphql
+query {
+    allPosts:Posts {
+        id
+        comments {
+            id
+            comment
+        }
+    }
+}
+```
+
 ## TO-DO List
 
  * Fragments
