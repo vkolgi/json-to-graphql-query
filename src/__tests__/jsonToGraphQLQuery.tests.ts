@@ -266,4 +266,42 @@ describe('jsonToGraphQL()', () => {
             'query { Posts (arg1: 20, arg2: "flibble") { id title } }'
         );
     });
+
+    it('uses aliases for fields', () => {
+      const query = {
+        query: {
+            Posts: {
+                __alias: 'lorem',
+                __args: {
+                    arg1: 20,
+                },
+                id: true
+            }
+        }
+      };
+      expect(jsonToGraphQLQuery(query)).to.equal(
+        'query { lorem:Posts (arg1: 20) { id } }'
+      );
+    });
+
+    it('does not include fields which value is false', () => {
+      const query = {
+        query: {
+            Posts: {
+                __args: {
+                  a: false
+                },
+                id: true,
+                name: false
+            },
+            Lorem: {
+              id: true
+            },
+            Ipsum: false
+        }
+      };
+      expect(jsonToGraphQLQuery(query)).to.equal(
+        'query { Posts (a: false) { id } Lorem { id } }'
+      );
+    });
 });
