@@ -32,38 +32,42 @@ function getIndent(level: number): string {
     return Array((level * 4) + 1).join(' ');
 }
 
-function convertQuery(node: any, level: number, output: Array<[string, number]>) {
-    for (const key in node) {
-        if (key != '__args' && key != '__alias') {
-            if (typeof node[key] == 'object') {
-                const fieldCount = Object.keys(node[key]).length;
-                let token: string;
-                let subFields: boolean;
+function filterNonConfigFields(it) {
+  return it !== '__args' && it !== '__alias'
+}
 
-                if (typeof node[key].__args == 'object') {
-                    token = `${key} (${buildArgs(node[key].__args)})`;
-                    subFields = fieldCount > 1;
-                }
-                else {
-                    token = `${key}`;
-                    subFields = fieldCount > 0;
-                }
+function convertQuery(node: any, level: number, output: Array<[ string, number ]>) {
+  Object.keys(node)
+    .filter(filterNonConfigFields)
+    .forEach(key => {
+      if (typeof node[ key ] === 'object') {
+        const fieldCount = Object.keys(node[ key ]).filter(filterNonConfigFields).length
 
-                if (typeof node[key].__alias == 'string') {
-                    token = `${node[key].__alias}:${token}`;
-                }
+        let token: string
+        let subFields: boolean
 
-                output.push([token + (subFields ? ' {' : ''), level]);
-                convertQuery(node[key], level + 1, output);
-                if (subFields) {
-                    output.push(['}', level]);
-                }
-            }
-            else if (node[key] !== false) {
-                output.push([`${key}`, level]);
-            }
+        if (typeof node[ key ].__args === 'object') {
+          token     = `${key} (${buildArgs(node[ key ].__args)})`
+          subFields = fieldCount > 1
+        } else {
+          token     = `${key}`
+          subFields = fieldCount > 0
         }
-    }
+
+        if (typeof node[ key ].__alias === 'string') {
+          token = `${node[ key ].__alias}:${token}`
+        }
+
+        output.push([ token + (subFields ? ' {' : ''), level ])
+        convertQuery(node[ key ], level + 1, output)
+
+        if (subFields) {
+          output.push([ '}', level ])
+        }
+      } else if (node[ key ]) {
+        output.push([ `${key}`, level ])
+      }
+    })
 }
 
 export interface IJsonToGraphQLOptions {
