@@ -13,10 +13,11 @@ npm install json-to-graphql-query
 
 ## Features
 
- * Converts a JavaScript object to a GraphQL Query
+ * Converts a JavaScript object to a GraphQL Query string
  * Full support for nested query nodes and arguments
- * Support for Enum values
- * Supports JSON input types for arguments
+ * Support for aliases via `__alias`
+ * Support for input arguments via `__args`
+ * Support for Enum values via `EnumType`
 
 See usage examples below :)
 
@@ -163,7 +164,7 @@ query {
 }
 ```
 
-### Use aliases
+### Using aliases
 
 ```typescript
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
@@ -187,7 +188,7 @@ Resulting `graphql_query`
 
 ```graphql
 query {
-    allPosts:Posts {
+    allPosts: Posts {
         id
         comments {
             id

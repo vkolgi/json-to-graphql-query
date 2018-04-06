@@ -280,7 +280,7 @@ describe('jsonToGraphQL()', () => {
         }
       };
       expect(jsonToGraphQLQuery(query)).to.equal(
-        'query { lorem:Posts (arg1: 20) { id } }'
+        'query { lorem: Posts (arg1: 20) { id } }'
       );
     });
 
