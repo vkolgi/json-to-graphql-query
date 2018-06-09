@@ -1,6 +1,13 @@
+import {EnumType} from './types/EnumType';
+import {VariableType} from './types/VariableType';
+
 function stringify(obj_from_json: any): string {
     if (obj_from_json instanceof EnumType) {
         return obj_from_json.value;
+    }
+    // variables should be prefixed with dollar sign and not e quoted
+    else if (obj_from_json instanceof VariableType) {
+        return `$${obj_from_json.value}`;
     }
     // Cheers to Derek: https://stackoverflow.com/questions/11233498/json-stringify-without-quotes-on-properties
     else if (typeof obj_from_json !== 'object' || obj_from_json === null) {
@@ -28,12 +35,20 @@ function buildArgs(argsObj: any): string {
     return args.join(', ');
 }
 
+function buildVariables(varsObj: any): string {
+    const args = [];
+    for (const varName in varsObj) {
+        args.push(`$${varName}: ${varsObj[varName]}`);
+    }
+    return args.join(', ');
+}
+
 function getIndent(level: number): string {
     return Array((level * 4) + 1).join(' ');
 }
 
 function filterNonConfigFields(fieldName: string) {
-    return fieldName !== '__args' && fieldName !== '__alias';
+    return fieldName !== '__args' && fieldName !== '__alias' && fieldName !== '__variables';
 }
 
 function convertQuery(node: any, level: number, output: Array<[ string, number ]>) {
@@ -47,6 +62,9 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
 
             if (typeof node[key].__args === 'object') {
                 token = `${key} (${buildArgs(node[key].__args)})`;
+            }
+            else if (typeof node[key].__variables === 'object') {
+                token = `${key} (${buildVariables(node[key].__variables)})`;
             }
             else {
                 token = `${key}`;
@@ -95,8 +113,4 @@ export function jsonToGraphQLQuery(query: any, options: IJsonToGraphQLOptions = 
         }
     });
     return output;
-}
-
-export class EnumType {
-    constructor(public value: string) {}
 }
