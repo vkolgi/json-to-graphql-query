@@ -6,8 +6,8 @@ describe('addApolloTarget()', () => {
     it('Converts a simple JavaScript object into a valid Apollo query', () => {
         const input = {
             appState2: {
-                hello2: 'some arbitrary value',
-                hello: 'arbitrary value'
+                hello: 'arbitrary value',
+                hello2: 'some arbitrary value'
             }
         };
         const apolloTarget = 'client';
@@ -20,34 +20,34 @@ describe('addApolloTarget()', () => {
             __typename: 'everyday-health-focuses',
             diet: {
                 __typename: 'diet',
-                title: 'Diet',
                 id: 'diet',
                 options: {
-                    '__typename': 'diet-options',	// Why does my IDE tell me only this line needs quotation?
+                    __typename: 'diet-options',	// Why does my IDE tell me only this line needs quotation?
                     'calorie-count': {
                         __typename: 'calorie-count',
-                        text: 'Calorie Count',
+                        category: 'Diet',
+                        icon: 'fa fa-question-circle',
                         id: 'calorie-count',
-                        icon: 'fa fa-question-circle',
-                        category: 'Diet',
-                        selected: false
+                        selected: false,
+                        text: 'Calorie Count'
                     },
-                    'weight': {
-                        __typename: 'weight',
-                        text: 'Weight',
-                        id: 'weight',
-                        icon: 'fa fa-question-circle',
-                        category: 'Diet',
-                        selected: false
-                    },
-                    'mood': {
+                    mood: {
                         __typename: 'mood',
-                        text: 'Mood',
-                        id: 'mood',
-                        icon: 'fa fa-question-circle',
                         category: 'Diet',
-                        selected: false
+                        icon: 'fa fa-question-circle',
+                        id: 'mood',
+                        selected: false,
+                        text: 'Mood'
                     },
+                    weight: {
+                        __typename: 'weight',
+                        category: 'Diet',
+                        icon: 'fa fa-question-circle',
+                        id: 'weight',
+                        selected: false,
+                        text: 'Weight'
+                    },
+                    title: 'Diet'
                 }
             },
         };
