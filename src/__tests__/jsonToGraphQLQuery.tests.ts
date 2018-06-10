@@ -1,6 +1,6 @@
 
 import { expect } from 'chai';
-import { jsonToGraphQLQuery, EnumType } from '../';
+import { jsonToGraphQLQuery, EnumType, VariableType } from '../';
 
 describe('jsonToGraphQL()', () => {
 
@@ -304,4 +304,42 @@ describe('jsonToGraphQL()', () => {
         'query { Posts (a: false) { id } Lorem { id } }'
       );
     });
+});
+
+it('converts a query variables', () => {
+    const query = {
+        query: {
+            __variables: {
+                variableName: 'String!'
+            },
+            Posts: {
+                __args: {
+                    arg1: 20,
+                    arg2: new VariableType('variableName')
+                },
+                id: true,
+                title: true,
+                comments: {
+                    __args: {
+                        offensiveOnly: true
+                    },
+                    id: true,
+                    comment: true,
+                    user: true
+                }
+            }
+        }
+    };
+    expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
+`query ($variableName: String!) {
+    Posts (arg1: 20, arg2: $variableName) {
+        id
+        title
+        comments (offensiveOnly: true) {
+            id
+            comment
+            user
+        }
+    }
+}`);
 });
