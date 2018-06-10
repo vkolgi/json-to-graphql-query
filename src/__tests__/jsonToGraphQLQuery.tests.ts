@@ -1,6 +1,6 @@
 
 import { expect } from 'chai';
-import { jsonToGraphQLQuery, EnumType, VariableType } from '../';
+import { jsonToGraphQLQuery } from '../';
 
 describe('jsonToGraphQL()', () => {
 
@@ -65,29 +65,6 @@ describe('jsonToGraphQL()', () => {
     }
 }`);
     });
-
-    it('converts a query with enum arguments', () => {
-      const query = {
-          query: {
-              Posts: {
-                  __args: {
-                      status: new EnumType('PUBLISHED')
-                  },
-                  id: true,
-                  title: true,
-                  post_date: true
-              }
-          }
-      };
-      expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
-`query {
-    Posts (status: PUBLISHED) {
-        id
-        title
-        post_date
-    }
-}`);
-  });
 
     it('converts a query with JSON arguments', () => {
         const query = {
@@ -304,42 +281,4 @@ describe('jsonToGraphQL()', () => {
         'query { Posts (a: false) { id } Lorem { id } }'
       );
     });
-});
-
-it('converts a query variables', () => {
-    const query = {
-        query: {
-            __variables: {
-                variableName: 'String!'
-            },
-            Posts: {
-                __args: {
-                    arg1: 20,
-                    arg2: new VariableType('variableName')
-                },
-                id: true,
-                title: true,
-                comments: {
-                    __args: {
-                        offensiveOnly: true
-                    },
-                    id: true,
-                    comment: true,
-                    user: true
-                }
-            }
-        }
-    };
-    expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
-`query ($variableName: String!) {
-    Posts (arg1: 20, arg2: $variableName) {
-        id
-        title
-        comments (offensiveOnly: true) {
-            id
-            comment
-            user
-        }
-    }
-}`);
 });

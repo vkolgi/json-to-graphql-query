@@ -1,11 +1,11 @@
-import {EnumType} from './types/EnumType';
-import {VariableType} from './types/VariableType';
+import { EnumType } from './types/EnumType';
+import { VariableType } from './types/VariableType';
 
 function stringify(obj_from_json: any): string {
     if (obj_from_json instanceof EnumType) {
         return obj_from_json.value;
     }
-    // variables should be prefixed with dollar sign and not e quoted
+    // variables should be prefixed with dollar sign and not quoted
     else if (obj_from_json instanceof VariableType) {
         return `$${obj_from_json.value}`;
     }

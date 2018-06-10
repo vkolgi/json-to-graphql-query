@@ -200,7 +200,7 @@ query {
 
 ## TO-DO List
 
- * Fragments
+ * Support Named Queries / Mutations
  * Probably some other things!...
 
 Pull requests welcome!
