@@ -60,7 +60,7 @@ query {
 }
 ```
 
-### Query with arguments 
+### Query with arguments
 
 ```typescript
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
@@ -200,7 +200,7 @@ query {
 }
 ```
 
-### Query with Enum Values 
+### Query with Enum Values
 
 ```typescript
 import { jsonToGraphQLQuery, EnumType } from 'json-to-graphql-query';
@@ -231,7 +231,7 @@ query {
 }
 ```
 
-### Query with variables 
+### Query with variables
 
 ```typescript
 import { jsonToGraphQLQuery, VariableType } from 'json-to-graphql-query';
@@ -262,6 +262,41 @@ query ($variable1: String!, $variableWithDefault: String = "default_value") {
     Posts (arg1: 20, arg2: $variable1) {
         id
         title
+    }
+}
+```
+
+### Ignore fields of the initial object
+We sometimes want to ignore specific fields in the initial object, for instance __typename in Apollo queries.
+While we can put the field value to `false`, we might want to keep its value.
+You can specify those fields not to be put into the final GraphQL query though the `ignoreFields` option:
+
+```typescript
+import { jsonToGraphQLQuery, VariableType } from 'json-to-graphql-query';
+
+const query = {
+    query: {
+        Posts: {
+            __ignore: {
+                variable1: 'a value'
+            },
+            id: true,
+            title: true,
+            post_date: true
+        }
+    }
+};
+const graphql_query = jsonToGraphQLQuery(query, { pretty: true, ignoreFields: ['__ignore'] });
+```
+
+Resulting `graphql_query`
+
+```graphql
+query {
+    Posts {
+        id
+        title
+        post_date
     }
 }
 ```
