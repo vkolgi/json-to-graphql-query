@@ -281,4 +281,28 @@ describe('jsonToGraphQL()', () => {
         'query { Posts (a: false) { id } Lorem { id } }'
       );
     });
+
+    it('ignores a field that exists in the initial object', () => {
+        const query = {
+            query: {
+                Posts: {
+                    __ignore: {
+                        test: 'a value'
+                    },
+                    id: true,
+                    title: true,
+                    post_date: true
+                }
+            }
+        };
+        expect(jsonToGraphQLQuery(query, { pretty: true, ignoreFields: ['__ignore'] })).to.equal(
+            `query {
+    Posts {
+        id
+        title
+        post_date
+    }
+}`);
+    });
+
 });

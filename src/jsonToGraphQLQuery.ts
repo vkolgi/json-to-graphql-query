@@ -47,16 +47,18 @@ function getIndent(level: number): string {
     return Array((level * 4) + 1).join(' ');
 }
 
-function filterNonConfigFields(fieldName: string) {
-    return fieldName !== '__args' && fieldName !== '__alias' && fieldName !== '__variables';
+function filterNonConfigFields(fieldName: string, ignoreFields: string[]) {
+    return fieldName !== '__args' && fieldName !== '__alias' && fieldName !== '__variables'
+        && ignoreFields.indexOf(fieldName) == -1;
 }
 
-function convertQuery(node: any, level: number, output: Array<[ string, number ]>) {
+function convertQuery(node: any, level: number, ignoreFields: string[], output: Array<[ string, number ]>) {
     Object.keys(node)
-        .filter(filterNonConfigFields)
+        .filter((key) => filterNonConfigFields(key, ignoreFields))
         .forEach((key) => {
         if (typeof node[key] === 'object') {
-            const fieldCount = Object.keys(node[key]).filter(filterNonConfigFields).length;
+            const fieldCount = Object.keys(node[key])
+                .filter((keyCount) => filterNonConfigFields(keyCount, ignoreFields)).length;
             const subFields = fieldCount > 0;
             let token: string;
 
@@ -75,7 +77,7 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
             }
 
             output.push([ token + (fieldCount > 0 ? ' {' : ''), level ]);
-            convertQuery(node[key], level + 1, output);
+            convertQuery(node[key], level + 1, ignoreFields, output);
 
             if (subFields) {
                 output.push([ '}', level ]);
@@ -88,6 +90,7 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
 
 export interface IJsonToGraphQLOptions {
     pretty?: boolean;
+    ignoreFields?: string[];
 }
 
 export function jsonToGraphQLQuery(query: any, options: IJsonToGraphQLOptions = {}) {
@@ -99,7 +102,7 @@ export function jsonToGraphQLQuery(query: any, options: IJsonToGraphQLOptions = 
     }
 
     const queryLines: Array<[string, number]> = [];
-    convertQuery(query, 0, queryLines);
+    convertQuery(query, 0, options.ignoreFields || [], queryLines);
 
     let output = '';
     queryLines.forEach(([line, level]) => {
