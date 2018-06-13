@@ -1,6 +1,10 @@
 
 # json-to-graphql-query Changelog
 
+## 1.5.0
+
+* Added `ignoreFields` option. Thanks @plmercereau
+
 ## 1.4.0
 
 * Added Variables support. Thanks @terion-name
