@@ -52,13 +52,13 @@ function filterNonConfigFields(fieldName: string, ignoreFields: string[]) {
         && ignoreFields.indexOf(fieldName) == -1;
 }
 
-function convertQuery(node: any, level: number, ignoreFields: string[], output: Array<[ string, number ]>) {
+function convertQuery(node: any, level: number, output: Array<[ string, number ]>, options: IJsonToGraphQLOptions) {
     Object.keys(node)
-        .filter((key) => filterNonConfigFields(key, ignoreFields))
+        .filter((key) => filterNonConfigFields(key, options.ignoreFields))
         .forEach((key) => {
         if (typeof node[key] === 'object') {
             const fieldCount = Object.keys(node[key])
-                .filter((keyCount) => filterNonConfigFields(keyCount, ignoreFields)).length;
+                .filter((keyCount) => filterNonConfigFields(keyCount, options.ignoreFields)).length;
             const subFields = fieldCount > 0;
             let token: string;
 
@@ -77,7 +77,7 @@ function convertQuery(node: any, level: number, ignoreFields: string[], output: 
             }
 
             output.push([ token + (fieldCount > 0 ? ' {' : ''), level ]);
-            convertQuery(node[key], level + 1, ignoreFields, output);
+            convertQuery(node[key], level + 1, output, options);
 
             if (subFields) {
                 output.push([ '}', level ]);
@@ -100,9 +100,12 @@ export function jsonToGraphQLQuery(query: any, options: IJsonToGraphQLOptions = 
     if (Object.keys(query).length == 0) {
         throw new Error('query object has no data');
     }
+    if (!(options.ignoreFields instanceof Array)) {
+        options.ignoreFields = [];
+    }
 
     const queryLines: Array<[string, number]> = [];
-    convertQuery(query, 0, options.ignoreFields || [], queryLines);
+    convertQuery(query, 0, queryLines, options);
 
     let output = '';
     queryLines.forEach(([line, level]) => {
