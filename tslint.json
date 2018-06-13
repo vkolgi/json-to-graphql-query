@@ -4,7 +4,8 @@
     ],
     "rules": {
        "trailing-comma": [false],
-       "object-literal-sort-keys": [true, "as-needed"],
+       "object-literal-sort-keys": false,
+       "object-literal-key-qhotes": [true, "as-needed"],
        "ordered-imports": false,
        "no-console": [false],
        "no-unused-new": false,
