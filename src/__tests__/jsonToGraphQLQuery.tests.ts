@@ -1,6 +1,6 @@
 
 import { expect } from 'chai';
-import { jsonToGraphQLQuery, filterNonConfigFields } from '../';
+import { jsonToGraphQLQuery } from '../';
 
 describe('jsonToGraphQL()', () => {
 
@@ -146,82 +146,64 @@ describe('jsonToGraphQL()', () => {
 }`);
     });
 
-    it('Converts a JavaScript object into a valid query, including a single directive w/ no arguments.', () => {
-        interface ILooseObject { [key: string]: any; }
-        let input: ILooseObject = {
-            __typename: 'everyday-health-focuses',
-            diet: {
-                __typename: 'diet',
-                id: 'diet',
-                options: {
-                    // tslint:disable-next-line:object-literal-key-quotes
-                    __typename: 'diet-options',
-                    'calorie-count': {
-                        __typename: 'calorie-count',
-                        category: 'Diet',
-                        icon: 'fa fa-question-circle',
-                        id: 'calorie-count',
-                        selected: false,
-                        text: 'Calorie Count'
+    it('Converts a complex query with directives with no arguments', () => {
+        const query = {
+            query: {
+                diet: {
+                    __directives: {
+                        client: true
                     },
-                    // tslint:disable-next-line:object-literal-key-quotes
-                    mood: {
-                        __typename: 'mood',
-                        category: 'Diet',
-                        icon: 'fa fa-question-circle',
-                        id: 'mood',
-                        selected: false,
-                        text: 'Mood'
+                    id: 'diet',
+                    options: {
+                        mood: {
+                            category: 'Diet',
+                            id: 'mood',
+                            selected: true,
+                        },
+                        weight: {
+                            category: 'Diet',
+                            icon: 'fa fa-question-circle',
+                            id: 'weight',
+                            selected: false,
+                            text: 'Weight'
+                        },
                     },
-                    // tslint:disable-next-line:object-literal-key-quotes
-                    weight: {
-                        __typename: 'weight',
-                        category: 'Diet',
-                        icon: 'fa fa-question-circle',
-                        id: 'weight',
-                        selected: false,
-                        text: 'Weight'
-                    },
+                    title: 'Diet'
                 },
-                title: 'Diet'
-            },
-            someOtherAbritraryKey: {
-                __typename: 'someArbitraryObjType',
-                arb1: 'arbitrary value',
-                arb2: 'some other arbitrary value'
+                someOtherAbritraryKey: {
+                    __directives: {
+                        client: true
+                    },
+                    arb1: 'arbitrary value',
+                    arb2: 'some other arbitrary value'
+                }
             }
         };
-        Object.keys(input)
-        .filter(filterNonConfigFields)
-        .forEach((key) => {
-            input[key]['__directives'] = { client: true, };
-        });
-        input = {query: input};
-        const expected = 'query { diet @client { id options { calorie-count { category ' +
-        'icon id text } mood { category icon id text } weight { category icon id text } } ' +
+        const expected = 'query { diet @client { id options { ' +
+        'mood { category id selected } weight { category icon id text } } ' +
         'title } someOtherAbritraryKey @client { arb1 arb2 } }';
-        expect(jsonToGraphQLQuery(input)).to.equal(expected);
+        expect(jsonToGraphQLQuery(query)).to.equal(expected);
     });
 
-    it('Converts a JavaScript object into a valid query, including single directives ' +
-    'with args, so long as any variables used are enclosed in a string with "$" included.', () => {
-        interface ILooseObject { [key: string]: any; }
-        let input: ILooseObject = {
-            someOtherAbritraryKey: {
-                __typename: 'someArbitraryObjType',
-                arb1: 'arbitrary value',
-                arb2: 'some other arbitrary value'
-            }
-        };
-        Object.keys(input)
-        .filter(filterNonConfigFields)
-        .forEach((key) => {
-            input[key]['__directives'] = { include: {if: '$isAwesome'}, };
-        });
-        input = {query: input};
-        const expected = 'query { someOtherAbritraryKey @include(if: $isAwesome) { arb1 arb2 } }';
-        expect(jsonToGraphQLQuery(input)).to.equal(expected);
-    });
+    // it('Converts a JavaScript object into a valid query, including single directives ' +
+    // 'with args, so long as any variables used are enclosed in a string with "$" included.', () => {
+    //     interface ILooseObject { [key: string]: any; }
+    //     let input: ILooseObject = {
+    //         someOtherAbritraryKey: {
+    //             __typename: 'someArbitraryObjType',
+    //             arb1: 'arbitrary value',
+    //             arb2: 'some other arbitrary value'
+    //         }
+    //     };
+    //     Object.keys(input)
+    //     .filter(filterNonConfigFields)
+    //     .forEach((key) => {
+    //         input[key]['__directives'] = { include: {if: '$isAwesome'}, };
+    //     });
+    //     input = {query: input};
+    //     const expected = 'query { someOtherAbritraryKey @include(if: $isAwesome) { arb1 arb2 } }';
+    //     expect(jsonToGraphQLQuery(input)).to.equal(expected);
+    // });
 
     // TODO
     // it('Converts a JavaScript object into a valid query, including *multiple* directives ' +
@@ -391,6 +373,37 @@ describe('jsonToGraphQL()', () => {
         id
         title
         post_date
+    }
+}`);
+    });
+
+    it('we can ignore apollo __typename keys', () => {
+        const query = {
+            query: {
+                Posts: {
+                    __typename: 'Posts',
+                    id: true,
+                    title: true,
+                    post_date: true,
+                    subObject: {
+                        __typename: 'subObject',
+                        test: 'a value'
+                    },
+                }
+            }
+        };
+        expect(jsonToGraphQLQuery(query, {
+            pretty: true,
+            ignoreFields: ['__typename']
+        })).to.equal(
+            `query {
+    Posts {
+        id
+        title
+        post_date
+        subObject {
+            test
+        }
     }
 }`);
     });
