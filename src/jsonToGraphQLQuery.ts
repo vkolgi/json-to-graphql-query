@@ -1,6 +1,8 @@
 import { EnumType } from './types/EnumType';
 import { VariableType } from './types/VariableType';
 
+export const configFields = ['__args', '__alias', '__variables', '__directives'];
+
 function stringify(obj_from_json: any): string {
     if (obj_from_json instanceof EnumType) {
         return obj_from_json.value;
@@ -48,8 +50,7 @@ function getIndent(level: number): string {
 }
 
 function filterNonConfigFields(fieldName: string, ignoreFields: string[]) {
-    return fieldName !== '__args' && fieldName !== '__alias' && fieldName !== '__variables'
-        && ignoreFields.indexOf(fieldName) == -1;
+    return configFields.indexOf(fieldName) == -1 && ignoreFields.indexOf(fieldName) == -1;
 }
 
 function convertQuery(node: any, level: number, output: Array<[ string, number ]>, options: IJsonToGraphQLOptions) {
