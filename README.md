@@ -18,8 +18,8 @@ const query = jsonToGraphQLQuery(queryObject: object, options?: object);
 ```
 
 Supported Options:
- * `pretty: boolean` - optional - set to `true` to enable pretty-printed output
- * `ignoreFields: string[]` - optional - you can pass an array of object key names that you want removed from the query
+ * `pretty` - boolean - optional - set to `true` to enable pretty-printed output
+ * `ignoreFields` - string[] - optional - you can pass an array of object key names that you want removed from the query
 
 ## Features
 
