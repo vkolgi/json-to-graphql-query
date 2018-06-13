@@ -286,7 +286,7 @@ describe('jsonToGraphQL()', () => {
         const query = {
             query: {
                 Posts: {
-                    __ignore: {
+                    thisShouldBeIgnored: {
                         test: 'a value'
                     },
                     id: true,
@@ -295,7 +295,10 @@ describe('jsonToGraphQL()', () => {
                 }
             }
         };
-        expect(jsonToGraphQLQuery(query, { pretty: true, ignoreFields: ['__ignore'] })).to.equal(
+        expect(jsonToGraphQLQuery(query, {
+            pretty: true,
+            ignoreFields: ['thisShouldBeIgnored']
+        })).to.equal(
             `query {
     Posts {
         id
