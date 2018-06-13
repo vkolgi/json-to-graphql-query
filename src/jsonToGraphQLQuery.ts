@@ -1,7 +1,7 @@
 import { EnumType } from './types/EnumType';
 import { VariableType } from './types/VariableType';
 
-export const configFields = ['__args', '__alias', '__variables', '__directives', '__typename'];
+export const configFields = ['__args', '__alias', '__variables', '__directives'];
 
 function stringify(obj_from_json: any): string {
     if (obj_from_json instanceof EnumType) {
