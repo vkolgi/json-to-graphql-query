@@ -146,6 +146,35 @@ describe('jsonToGraphQL()', () => {
 }`);
     });
 
+    it('converts a simple query with args and directives with no arguments', () => {
+        const query = {
+            query: {
+                Posts: {
+                    __args: {
+                        where: {
+                            id: 10,
+                        },
+                        orderBy: 'flibble'
+                    },
+                    __directives: {
+                        client: true
+                    },
+                    id: true,
+                    title: true,
+                    post_date: true
+                }
+            }
+        } as any;
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
+`query {
+    Posts @client (where: {id: 10}, orderBy: 'flibble') {
+        id
+        title
+        post_date
+    }
+}`);
+    });
+
     it('Converts a complex query with directives with no arguments', () => {
         const query = {
             query: {
