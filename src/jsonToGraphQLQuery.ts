@@ -46,16 +46,23 @@ function buildVariables(varsObj: any): string {
 }
 
 function buildDirectives(dirsObj: any): string {
-    const numDirectives = Object.keys(dirsObj).length;
-    if (numDirectives > 1) {
-        throw new Error(numDirectives.toString());
+    const directiveName = Object.keys(dirsObj)[0];
+    const directiveValue = dirsObj[directiveName];
+    if (typeof directiveValue === 'boolean') {
+        return directiveName;
     }
-    // const args = [];
-    // for (const varName in dirsObj) {
-    //     args.push(`@${varName}: ${dirsObj[varName]}`);
-    // }
-    // return args.join(', ');
-    return '@' + Object.keys(dirsObj)[0];
+    else if (typeof directiveValue === 'object') {
+        const args = [];
+        for (const argName in directiveValue) {
+            const argVal = stringify(directiveValue[argName]).replace(/"/g, '');
+            args.push(`${argName}: ${argVal}`);
+        }
+        return `${directiveName}(${args.join(', ')})`;
+    }
+    else {
+        throw new Error(`Unsupported type for directive: ${typeof directiveValue}. Types allowed: object, boolean.\n` +
+        `Offending object: ${JSON.stringify(dirsObj)}`);
+    }
 }
 
 function getIndent(level: number): string {
@@ -83,15 +90,14 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
                 token = `${key} (${buildVariables(node[key].__variables)})`;
             }
             else if (typeof node[key].__directives === 'object') {
-                // TODO: Add support for multiple directives on one node, if that's a thing.
-                try {
-                    token = `${key} ${buildDirectives(node[key].__directives)}`;
-                } catch (e) {
-                    e = e.toString().replace(/Error: /, '');
+                // TODO: Add support for multiple directives on one node.
+                const numDirectives = Object.keys(node[key].__directives).length;
+                if (numDirectives > 1) {
                     throw new Error(`Too many directives. The object/key ` +
-                    `'${Object.keys(node[key])[0]}' had ${e} directives, ` +
+                    `'${Object.keys(node[key])[0]}' had ${numDirectives} directives, ` +
                     `but only 1 directive per object/key is supported at this time.`);
                 }
+                token = `${key} @${buildDirectives(node[key].__directives)}`;
             }
             else {
                 token = `${key}`;

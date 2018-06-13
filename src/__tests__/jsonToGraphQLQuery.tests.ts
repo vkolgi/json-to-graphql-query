@@ -146,7 +146,7 @@ describe('jsonToGraphQL()', () => {
 }`);
     });
 
-    it('Converts a JavaScript object into a valid Apollo query, including single directives with no arguments.', () => {
+    it('Converts a JavaScript object into a valid query, including a single directive w/ no arguments.', () => {
         interface ILooseObject { [key: string]: any; }
         let input: ILooseObject = {
             __typename: 'everyday-health-focuses',
@@ -197,13 +197,41 @@ describe('jsonToGraphQL()', () => {
             input[key]['__directives'] = { client: true, };
         });
         input = {query: input};
-        // Do I want to add some keysToStrip functionality separately?
-        // - const input = jsonToGraphqlQuery(preInput, { keysToStrip: ['__typename'] });
         const expected = 'query { diet @client { id options { calorie-count { category ' +
         'icon id text } mood { category icon id text } weight { category icon id text } } ' +
         'title } someOtherAbritraryKey @client { arb1 arb2 } }';
         expect(jsonToGraphQLQuery(input)).to.equal(expected);
     });
+
+    it('Converts a JavaScript object into a valid query, including single directives ' +
+    'with args, so long as any variables used are enclosed in a string with "$" included.', () => {
+        interface ILooseObject { [key: string]: any; }
+        let input: ILooseObject = {
+            someOtherAbritraryKey: {
+                __typename: 'someArbitraryObjType',
+                arb1: 'arbitrary value',
+                arb2: 'some other arbitrary value'
+            }
+        };
+        Object.keys(input)
+        .filter(filterNonConfigFields)
+        .forEach((key) => {
+            input[key]['__directives'] = { include: {if: '$isAwesome'}, };
+        });
+        input = {query: input};
+        const expected = 'query { someOtherAbritraryKey @include(if: $isAwesome) { arb1 arb2 } }';
+        expect(jsonToGraphQLQuery(input)).to.equal(expected);
+    });
+
+    // TODO
+    // it('Converts a JavaScript object into a valid query, including *multiple* directives ' +
+    // 'with args, so long as any variables used are enclosed in a string with "$" included.', () => {
+    // });
+
+    // TODO
+    // it('Creates a query, stripping/ignoring certain, specified keys.', () => {
+    // // Example usage: jsonToGraphqlQuery(preInput, { keysToStrip: ['__typename'] });
+    // });
 
     it('converts a query with nested objects', () => {
         const query = {
