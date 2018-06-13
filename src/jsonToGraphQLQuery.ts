@@ -1,6 +1,8 @@
 import { EnumType } from './types/EnumType';
 import { VariableType } from './types/VariableType';
 
+export const configFields = ['__args', '__alias', '__variables', '__directives', '__typename'];
+
 function stringify(obj_from_json: any): string {
     if (obj_from_json instanceof EnumType) {
         return obj_from_json.value;
@@ -43,12 +45,26 @@ function buildVariables(varsObj: any): string {
     return args.join(', ');
 }
 
+function buildDirectives(dirsObj: any): string {
+    const numDirectives = Object.keys(dirsObj).length;
+    if (numDirectives > 1) {
+        throw new Error(numDirectives.toString());
+    }
+    // const args = [];
+    // for (const varName in dirsObj) {
+    //     args.push(`@${varName}: ${dirsObj[varName]}`);
+    // }
+    // return args.join(', ');
+    return '@' + Object.keys(dirsObj)[0];
+}
+
 function getIndent(level: number): string {
     return Array((level * 4) + 1).join(' ');
 }
 
-function filterNonConfigFields(fieldName: string) {
-    return fieldName !== '__args' && fieldName !== '__alias' && fieldName !== '__variables';
+export function filterNonConfigFields(fieldName: string) {
+    // Returns true if fieldName is not a 'configField'.
+    return configFields.indexOf(fieldName) === -1;  // Equivalent to: return !configFields.includes(fieldName);
 }
 
 function convertQuery(node: any, level: number, output: Array<[ string, number ]>) {
@@ -65,6 +81,17 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
             }
             else if (typeof node[key].__variables === 'object') {
                 token = `${key} (${buildVariables(node[key].__variables)})`;
+            }
+            else if (typeof node[key].__directives === 'object') {
+                // TODO: Add support for multiple directives on one node, if that's a thing.
+                try {
+                    token = `${key} ${buildDirectives(node[key].__directives)}`;
+                } catch (e) {
+                    e = e.toString().replace(/Error: /, '');
+                    throw new Error(`Too many directives. The object/key ` +
+                    `'${Object.keys(node[key])[0]}' had ${e} directives, ` +
+                    `but only 1 directive per object/key is supported at this time.`);
+                }
             }
             else {
                 token = `${key}`;

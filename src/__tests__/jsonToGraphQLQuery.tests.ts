@@ -1,6 +1,6 @@
 
 import { expect } from 'chai';
-import { jsonToGraphQLQuery } from '../';
+import { jsonToGraphQLQuery, filterNonConfigFields } from '../';
 
 describe('jsonToGraphQL()', () => {
 
@@ -144,6 +144,65 @@ describe('jsonToGraphQL()', () => {
         post_date
     }
 }`);
+    });
+
+    it('Converts a JavaScript object into a valid Apollo query, including single directives with no arguments.', () => {
+        interface ILooseObject { [key: string]: any; }
+        let input: ILooseObject = {
+            __typename: 'everyday-health-focuses',
+            diet: {
+                __typename: 'diet',
+                id: 'diet',
+                options: {
+                    // tslint:disable-next-line:object-literal-key-quotes
+                    __typename: 'diet-options',
+                    'calorie-count': {
+                        __typename: 'calorie-count',
+                        category: 'Diet',
+                        icon: 'fa fa-question-circle',
+                        id: 'calorie-count',
+                        selected: false,
+                        text: 'Calorie Count'
+                    },
+                    // tslint:disable-next-line:object-literal-key-quotes
+                    mood: {
+                        __typename: 'mood',
+                        category: 'Diet',
+                        icon: 'fa fa-question-circle',
+                        id: 'mood',
+                        selected: false,
+                        text: 'Mood'
+                    },
+                    // tslint:disable-next-line:object-literal-key-quotes
+                    weight: {
+                        __typename: 'weight',
+                        category: 'Diet',
+                        icon: 'fa fa-question-circle',
+                        id: 'weight',
+                        selected: false,
+                        text: 'Weight'
+                    },
+                },
+                title: 'Diet'
+            },
+            someOtherAbritraryKey: {
+                __typename: 'someArbitraryObjType',
+                arb1: 'arbitrary value',
+                arb2: 'some other arbitrary value'
+            }
+        };
+        Object.keys(input)
+        .filter(filterNonConfigFields)
+        .forEach((key) => {
+            input[key]['__directives'] = { client: true, };
+        });
+        input = {query: input};
+        // Do I want to add some keysToStrip functionality separately?
+        // - const input = jsonToGraphqlQuery(preInput, { keysToStrip: ['__typename'] });
+        const expected = 'query { diet @client { id options { calorie-count { category ' +
+        'icon id text } mood { category icon id text } weight { category icon id text } } ' +
+        'title } someOtherAbritraryKey @client { arb1 arb2 } }';
+        expect(jsonToGraphQLQuery(input)).to.equal(expected);
     });
 
     it('converts a query with nested objects', () => {
