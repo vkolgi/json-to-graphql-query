@@ -1,7 +1,7 @@
 import { EnumType } from './types/EnumType';
 import { VariableType } from './types/VariableType';
 
-export const configFields = ['__args', '__alias', '__variables', '__directives', '__typename'];
+export const configFields = ['__args', '__alias', '__variables', '__directives'];
 
 function stringify(obj_from_json: any): string {
     if (obj_from_json instanceof EnumType) {
@@ -69,17 +69,18 @@ function getIndent(level: number): string {
     return Array((level * 4) + 1).join(' ');
 }
 
-export function filterNonConfigFields(fieldName: string) {
+function filterNonConfigFields(fieldName: string, ignoreFields: string[]) {
     // Returns true if fieldName is not a 'configField'.
-    return configFields.indexOf(fieldName) === -1;  // Equivalent to: return !configFields.includes(fieldName);
+    return configFields.indexOf(fieldName) == -1 && ignoreFields.indexOf(fieldName) == -1;
 }
 
-function convertQuery(node: any, level: number, output: Array<[ string, number ]>) {
+function convertQuery(node: any, level: number, output: Array<[ string, number ]>, options: IJsonToGraphQLOptions) {
     Object.keys(node)
-        .filter(filterNonConfigFields)
+        .filter((key) => filterNonConfigFields(key, options.ignoreFields))
         .forEach((key) => {
         if (typeof node[key] === 'object') {
-            const fieldCount = Object.keys(node[key]).filter(filterNonConfigFields).length;
+            const fieldCount = Object.keys(node[key])
+                .filter((keyCount) => filterNonConfigFields(keyCount, options.ignoreFields)).length;
             const subFields = fieldCount > 0;
             let token: string;
 
@@ -108,7 +109,7 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
             }
 
             output.push([ token + (fieldCount > 0 ? ' {' : ''), level ]);
-            convertQuery(node[key], level + 1, output);
+            convertQuery(node[key], level + 1, output, options);
 
             if (subFields) {
                 output.push([ '}', level ]);
@@ -121,6 +122,7 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
 
 export interface IJsonToGraphQLOptions {
     pretty?: boolean;
+    ignoreFields?: string[];
 }
 
 export function jsonToGraphQLQuery(query: any, options: IJsonToGraphQLOptions = {}) {
@@ -130,9 +132,12 @@ export function jsonToGraphQLQuery(query: any, options: IJsonToGraphQLOptions = 
     if (Object.keys(query).length == 0) {
         throw new Error('query object has no data');
     }
+    if (!(options.ignoreFields instanceof Array)) {
+        options.ignoreFields = [];
+    }
 
     const queryLines: Array<[string, number]> = [];
-    convertQuery(query, 0, queryLines);
+    convertQuery(query, 0, queryLines, options);
 
     let output = '';
     queryLines.forEach(([line, level]) => {

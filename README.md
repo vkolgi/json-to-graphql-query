@@ -11,10 +11,21 @@ Mainly useful for applications that need to generate graphql queries dynamically
 npm install json-to-graphql-query
 ```
 
+## Usage
+
+```ts
+const query = jsonToGraphQLQuery(queryObject: object, options?: object);
+```
+
+Supported Options:
+ * `pretty` - boolean - optional - set to `true` to enable pretty-printed output
+ * `ignoreFields` - string[] - optional - you can pass an array of object key names that you want removed from the query
+
 ## Features
 
  * Converts a JavaScript object to a GraphQL Query string
  * Full support for nested query / mutation nodes and arguments
+ * Optionally strip specific object keys using the `ignoreFields` option
  * Support for input arguments via [`__args`](#query-with-arguments)
  * Support for query aliases via [`__alias`](#using-aliases)
  * Support for Enum values via [`EnumType`](#query-with-enum-values)
@@ -23,13 +34,6 @@ npm install json-to-graphql-query
 ## Recent Changes
 
 See the [CHANGELOG](CHANGELOG.md)
-
-## Usage
-
-**jsonToGraphQLQuery(** queryObject: object, options?: object **)**
-
-Supported options:
- * **pretty**: boolean - Set to `true` to enable pretty-printed output
 
 ### Simple Query
 
@@ -60,7 +64,7 @@ query {
 }
 ```
 
-### Query with arguments 
+### Query with arguments
 
 ```typescript
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
@@ -200,7 +204,7 @@ query {
 }
 ```
 
-### Query with Enum Values 
+### Query with Enum Values
 
 ```typescript
 import { jsonToGraphQLQuery, EnumType } from 'json-to-graphql-query';
@@ -231,7 +235,7 @@ query {
 }
 ```
 
-### Query with variables 
+### Query with variables
 
 ```typescript
 import { jsonToGraphQLQuery, VariableType } from 'json-to-graphql-query';
@@ -262,6 +266,44 @@ query ($variable1: String!, $variableWithDefault: String = "default_value") {
     Posts (arg1: 20, arg2: $variable1) {
         id
         title
+    }
+}
+```
+
+### Ignoring fields in the query object
+
+We sometimes want to ignore specific fields in the initial object, for instance __typename in Apollo queries.
+You can specify these fields using the `ignoreFields` option:
+
+```typescript
+import { jsonToGraphQLQuery, VariableType } from 'json-to-graphql-query';
+
+const query = {
+    query: {
+        Posts: {
+            shouldBeIgnored: {
+                variable1: 'a value'
+            },
+            id: true,
+            title: true,
+            post_date: true
+        }
+    }
+};
+const graphql_query = jsonToGraphQLQuery(query, {
+    pretty: true,
+    ignoreFields: ['shouldBeIgnored']
+});
+```
+
+Resulting `graphql_query`
+
+```graphql
+query {
+    Posts {
+        id
+        title
+        post_date
     }
 }
 ```

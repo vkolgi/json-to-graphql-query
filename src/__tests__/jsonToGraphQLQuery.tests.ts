@@ -1,6 +1,6 @@
 
 import { expect } from 'chai';
-import { jsonToGraphQLQuery, filterNonConfigFields } from '../';
+import { jsonToGraphQLQuery } from '../';
 
 describe('jsonToGraphQL()', () => {
 
@@ -146,79 +146,94 @@ describe('jsonToGraphQL()', () => {
 }`);
     });
 
-    it('Converts a JavaScript object into a valid query, including a single directive w/ no arguments.', () => {
-        interface ILooseObject { [key: string]: any; }
-        let input: ILooseObject = {
-            __typename: 'everyday-health-focuses',
-            diet: {
-                __typename: 'diet',
-                id: 'diet',
-                options: {
-                    __typename: 'diet-options',
-                    calorieCount: {
-                        __typename: 'calorie-count',
-                        category: 'Diet',
-                        icon: 'fa fa-question-circle',
-                        id: 'calorie-count',
-                        selected: false,
-                        text: 'Calorie Count'
+    it('converts a simple query with args and directives with no arguments', () => {
+        const query = {
+            query: {
+                Posts: {
+                    __args: {
+                        where: {
+                            id: 10,
+                        },
+                        orderBy: 'flibble'
                     },
-                    mood: {
-                        __typename: 'mood',
-                        category: 'Diet',
-                        icon: 'fa fa-question-circle',
-                        id: 'mood',
-                        selected: false,
-                        text: 'Mood'
+                    __directives: {
+                        client: true
                     },
-                    weight: {
-                        __typename: 'weight',
-                        category: 'Diet',
-                        icon: 'fa fa-question-circle',
-                        id: 'weight',
-                        selected: false,
-                        text: 'Weight'
-                    },
-                },
-                title: 'Diet'
-            },
-            someOtherAbritraryKey: {
-                __typename: 'someArbitraryObjType',
-                arb1: 'arbitrary value',
-                arb2: 'some other arbitrary value'
+                    id: true,
+                    title: true,
+                    post_date: true
+                }
             }
-        };
-        Object.keys(input)
-        .filter(filterNonConfigFields)
-        .forEach((key) => {
-            input[key]['__directives'] = { client: true, };
-        });
-        input = {query: input};
-        const expected = 'query { diet @client { id options { calorieCount { category ' +
-        'icon id text } mood { category icon id text } weight { category icon id text } } ' +
-        'title } someOtherAbritraryKey @client { arb1 arb2 } }';
-        expect(jsonToGraphQLQuery(input)).to.equal(expected);
+        } as any;
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
+`query {
+    Posts @client (where: {id: 10}, orderBy: 'flibble') {
+        id
+        title
+        post_date
+    }
+}`);
     });
 
-    it('Converts a JavaScript object into a valid query, including single directives ' +
-    'with args, so long as any variables used are enclosed in a string with "$" included.', () => {
-        interface ILooseObject { [key: string]: any; }
-        let input: ILooseObject = {
-            someOtherAbritraryKey: {
-                __typename: 'someArbitraryObjType',
-                arb1: 'arbitrary value',
-                arb2: 'some other arbitrary value'
+    it('Converts a complex query with directives with no arguments', () => {
+        const query = {
+            query: {
+                diet: {
+                    __directives: {
+                        client: true
+                    },
+                    id: 'diet',
+                    options: {
+                        mood: {
+                            category: 'Diet',
+                            id: 'mood',
+                            selected: true,
+                        },
+                        weight: {
+                            category: 'Diet',
+                            icon: 'fa fa-question-circle',
+                            id: 'weight',
+                            selected: false,
+                            text: 'Weight'
+                        },
+                    },
+                    title: 'Diet'
+                },
+                someOtherAbritraryKey: {
+                    __directives: {
+                        client: true
+                    },
+                    arb1: 'arbitrary value',
+                    arb2: 'some other arbitrary value'
+                }
             }
         };
-        Object.keys(input)
-        .filter(filterNonConfigFields)
-        .forEach((key) => {
-            input[key]['__directives'] = { include: {if: '$isAwesome'}, };
-        });
-        input = {query: input};
-        const expected = 'query { someOtherAbritraryKey @include(if: $isAwesome) { arb1 arb2 } }';
-        expect(jsonToGraphQLQuery(input)).to.equal(expected);
+        const expected = 'query { diet @client { id options { ' +
+        'mood { category id selected } weight { category icon id text } } ' +
+        'title } someOtherAbritraryKey @client { arb1 arb2 } }';
+        expect(jsonToGraphQLQuery(query)).to.equal(expected);
     });
+
+    // TODO: Need this test still? How to handle variables unless $ declared explicitly?
+    // it('Converts a JavaScript object into a valid query, including single directives ' +
+    // 'with args, so long as any variables used are enclosed in a string with "$" included.', () => {
+    //     interface ILooseObject { [key: string]: any; }
+    //     let input: ILooseObject = {
+    //         someOtherAbritraryKey: {
+    //             __typename: 'someArbitraryObjType',
+    //             arb1: 'arbitrary value',
+    //             arb2: 'some other arbitrary value'
+    //         }
+    //     };
+    //     Object.keys(input)
+    //     .filter(filterNonConfigFields)
+    //     .forEach((key) => {
+    //         input[key]['__directives'] = { include: {if: '$isAwesome'}, };
+    //     });
+    //     input = {query: input};
+    //     const expected = 'query { someOtherAbritraryKey @include(if: $isAwesome) { arb1 arb2 } }';
+    //     expect(jsonToGraphQLQuery(input)).to.equal(expected);
+    // });
 
     // TODO
     // it('Converts a JavaScript object into a valid query, including *multiple* directives ' +
@@ -365,4 +380,62 @@ describe('jsonToGraphQL()', () => {
         'query { Posts (a: false) { id } Lorem { id } }'
       );
     });
+
+    it('ignores a field that exists in the initial object', () => {
+        const query = {
+            query: {
+                Posts: {
+                    thisShouldBeIgnored: {
+                        test: 'a value'
+                    },
+                    id: true,
+                    title: true,
+                    post_date: true
+                }
+            }
+        };
+        expect(jsonToGraphQLQuery(query, {
+            pretty: true,
+            ignoreFields: ['thisShouldBeIgnored']
+        })).to.equal(
+            `query {
+    Posts {
+        id
+        title
+        post_date
+    }
+}`);
+    });
+
+    it('we can ignore apollo __typename keys', () => {
+        const query = {
+            query: {
+                Posts: {
+                    __typename: 'Posts',
+                    id: true,
+                    title: true,
+                    post_date: true,
+                    subObject: {
+                        __typename: 'subObject',
+                        test: 'a value'
+                    },
+                }
+            }
+        };
+        expect(jsonToGraphQLQuery(query, {
+            pretty: true,
+            ignoreFields: ['__typename']
+        })).to.equal(
+            `query {
+    Posts {
+        id
+        title
+        post_date
+        subObject {
+            test
+        }
+    }
+}`);
+    });
+
 });
