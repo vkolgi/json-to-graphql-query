@@ -167,7 +167,7 @@ describe('jsonToGraphQL()', () => {
         } as any;
         expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
 `query {
-    Posts @client (where: {id: 10}, orderBy: 'flibble') {
+    Posts @client (where: {id: 10}, orderBy: "flibble") {
         id
         title
         post_date
@@ -175,7 +175,7 @@ describe('jsonToGraphQL()', () => {
 }`);
     });
 
-    it('Converts a complex query with directives with no arguments', () => {
+    it('converts a complex query with directives with no arguments', () => {
         const query = {
             query: {
                 diet: {
@@ -215,8 +215,8 @@ describe('jsonToGraphQL()', () => {
     });
 
     // TODO: Need this test still? How to handle variables unless $ declared explicitly?
-    // it('Converts a JavaScript object into a valid query, including single directives ' +
-    // 'with args, so long as any variables used are enclosed in a string with "$" included.', () => {
+    // it('converts a JavaScript object into a valid query, including single directives ' +
+    // 'with args, so long as any variables used are enclosed in a string with "$" included', () => {
     //     interface ILooseObject { [key: string]: any; }
     //     let input: ILooseObject = {
     //         someOtherAbritraryKey: {
@@ -236,12 +236,12 @@ describe('jsonToGraphQL()', () => {
     // });
 
     // TODO
-    // it('Converts a JavaScript object into a valid query, including *multiple* directives ' +
-    // 'with args, so long as any variables used are enclosed in a string with "$" included.', () => {
+    // it('converts a JavaScript object into a valid query, including *multiple* directives ' +
+    // 'with args, so long as any variables used are enclosed in a string with "$" included', () => {
     // });
 
     // TODO
-    // it('Creates a query, stripping/ignoring certain, specified keys.', () => {
+    // it('creates a query, stripping/ignoring certain, specified keys', () => {
     // // Example usage: jsonToGraphqlQuery(preInput, { keysToStrip: ['__typename'] });
     // });
 
