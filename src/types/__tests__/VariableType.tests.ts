@@ -43,35 +43,12 @@ describe('VariableType()', () => {
 }`);
     });
 
-    it('properly ads dollar sign on JSON.stringify', () => {
-        const query = {
-            query: {
-                __variables: {
-                    someString: 'String!',
-                    varWithDefault: 'String = "default_value"'
-                },
-                Posts: {
-                    __args: {
-                        arg1: 20,
-                        arg2: new VariableType('someString')
-                    },
-                    id: true,
-                    title: true,
-                    comments: {
-                        __args: {
-                            offensiveOnly: true
-                        },
-                        id: true,
-                        comment: true,
-                        user: true
-                    }
-                }
-            }
+    it('Returns variable name prefixed with a dollar sign with JSON.stringify', () => {
+        const args = {
+            arg2: new VariableType('someString')
         };
-        expect(JSON.stringify(query)).to.equal(
-            '{"query":{"__variables":{"someString":"String!","varWithDefault":"String = \\"default_value\\""},'
-            + '"Posts":{"__args":{"arg1":20,"arg2":"$someString"},"id":true,"title":true,"comments":'
-            + '{"__args":{"offensiveOnly":true},"id":true,"comment":true,"user":true}}}}'
+        expect(JSON.stringify(args)).to.equal(
+            '{"arg2":"$someString"}'
         );
     });
 
