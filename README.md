@@ -30,6 +30,7 @@ Supported Options:
  * Support for query aliases via [`__alias`](#using-aliases)
  * Support for Enum values via [`EnumType`](#query-with-enum-values)
  * Support for variables via [`__variables`](#query-with-variables)
+ * Support for simple directives (such as `@client`) via [`__directives`](#query-with-directives)
 
 ## Recent Changes
 
@@ -266,6 +267,38 @@ query ($variable1: String!, $variableWithDefault: String = "default_value") {
     Posts (arg1: 20, arg2: $variable1) {
         id
         title
+    }
+}
+```
+
+### Query with Directives
+
+```typescript
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+
+const query = {
+    query: {
+        __directives: {
+            client: true
+        }
+        Posts: {
+            id: true,
+            title: true,
+            post_date: true
+        }
+    }
+};
+const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
+```
+
+Resulting `graphql_query`
+
+```graphql
+query {
+    Posts @client {
+        id
+        title
+        post_date
     }
 }
 ```
