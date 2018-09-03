@@ -344,20 +344,44 @@ describe('jsonToGraphQL()', () => {
     });
 
     it('uses aliases for fields', () => {
-      const query = {
-        query: {
-            Posts: {
-                __alias: 'lorem',
-                __args: {
-                    arg1: 20,
-                },
-                id: true
+        const query = {
+            query: {
+                Posts: {
+                    __alias: 'lorem',
+                    __args: {
+                        arg1: 20,
+                    },
+                    id: true
+                }
             }
-        }
-      };
-      expect(jsonToGraphQLQuery(query)).to.equal(
-        'query { lorem: Posts (arg1: 20) { id } }'
-      );
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { lorem: Posts (arg1: 20) { id } }'
+        );
+    });
+
+    it('supports multiple aliases for one field', () => {
+        const query = {
+            query: {
+                lorem: {
+                    __aliasFor: 'Posts',
+                    __args: {
+                        arg1: 20,
+                    },
+                    id: true
+                },
+                larem: {
+                    __aliasFor: 'Posts',
+                    __args: {
+                        arg2: 10,
+                    },
+                    id: true
+                }
+            }
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { lorem: Posts (arg1: 20) { id } larem: Posts (arg2: 10) { id } }'
+        );
     });
 
     it('does not include fields which value is false', () => {
