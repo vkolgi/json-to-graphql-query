@@ -1,7 +1,7 @@
 import { EnumType } from './types/EnumType';
 import { VariableType } from './types/VariableType';
 
-export const configFields = ['__args', '__alias', '__variables', '__directives'];
+export const configFields = ['__args', '__alias', '__aliasFor', '__variables', '__directives'];
 
 function stringify(obj_from_json: any): string {
     if (obj_from_json instanceof EnumType) {
@@ -84,9 +84,12 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
             const subFields = fieldCount > 0;
             const argsExist = typeof node[key].__args === 'object';
             const directivesExist = typeof node[key].__directives === 'object';
-            let token: string;
+            let token = `${key}`;
+            if (typeof node[key].__aliasFor === 'string') {
+                token = `${token}: ${node[key].__aliasFor}`;
+            }
             if (typeof node[key].__variables === 'object') {
-                token = `${key} (${buildVariables(node[key].__variables)})`;
+                token = `${token} (${buildVariables(node[key].__variables)})`;
             }
             else if (argsExist || directivesExist) {
                 let argsStr: string;
@@ -107,12 +110,9 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
                     argsStr = `(${buildArgs(node[key].__args)})`;
                 }
                 const spacer = directivesExist && argsExist ? ' ' : '';
-                token = `${key} ${dirsStr ? dirsStr : ''}${spacer}${argsStr ? argsStr : ''}`;
+                token = `${token} ${dirsStr ? dirsStr : ''}${spacer}${argsStr ? argsStr : ''}`;
             }
-            else {
-                token = `${key}`;
-            }
-
+            //Should be removed in version 2.0.0
             if (typeof node[key].__alias === 'string') {
                 token = `${node[key].__alias}: ${token}`;
             }
