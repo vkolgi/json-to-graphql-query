@@ -78,54 +78,59 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
     Object.keys(node)
         .filter((key) => filterNonConfigFields(key, options.ignoreFields))
         .forEach((key) => {
-        if (typeof node[key] === 'object') {
-            const fieldCount = Object.keys(node[key])
-                .filter((keyCount) => filterNonConfigFields(keyCount, options.ignoreFields)).length;
-            const subFields = fieldCount > 0;
-            const argsExist = typeof node[key].__args === 'object';
-            const directivesExist = typeof node[key].__directives === 'object';
-            let token = `${key}`;
-            if (typeof node[key].__aliasFor === 'string') {
-                token = `${token}: ${node[key].__aliasFor}`;
-            }
-            if (typeof node[key].__variables === 'object') {
-                token = `${token} (${buildVariables(node[key].__variables)})`;
-            }
-            else if (argsExist || directivesExist) {
-                let argsStr: string;
-                let dirsStr: string;
-                if (directivesExist) {
-                    // TODO: Add support for multiple directives on one node. Then condense blocks into terniary lines.
-                    // const directives = Object.keys(node[key].__directives);
-                    const numDirectives = Object.keys(node[key].__directives).length;
-                    if (numDirectives > 1) {
-                        throw new Error(`Too many directives. The object/key ` +
-                        `'${Object.keys(node[key])[0]}' had ${numDirectives} directives, ` +
-                        `but only 1 directive per object/key is supported at this time.`);
+
+            if (typeof node[key] === 'object') {
+
+                const fieldCount = Object.keys(node[key])
+                    .filter((keyCount) => filterNonConfigFields(keyCount, options.ignoreFields)).length;
+                const subFields = fieldCount > 0;
+                const argsExist = typeof node[key].__args === 'object';
+                const directivesExist = typeof node[key].__directives === 'object';
+
+                let token = `${key}`;
+
+                if (typeof node[key].__aliasFor === 'string') {
+                    token = `${token}: ${node[key].__aliasFor}`;
+                }
+
+                if (typeof node[key].__variables === 'object') {
+                    token = `${token} (${buildVariables(node[key].__variables)})`;
+                }
+                else if (argsExist || directivesExist) {
+                    let argsStr: string;
+                    let dirsStr: string;
+                    if (directivesExist) {
+                        // TODO: Add support for multiple directives on one node.
+                        const numDirectives = Object.keys(node[key].__directives).length;
+                        if (numDirectives > 1) {
+                            throw new Error(`Too many directives. The object/key ` +
+                            `'${Object.keys(node[key])[0]}' had ${numDirectives} directives, ` +
+                            `but only 1 directive per object/key is supported at this time.`);
+                        }
+                        dirsStr = `@${buildDirectives(node[key].__directives)}`;
                     }
-                    // directives.map(((x) => { dirsStr += ` @${buildDirectives(node[key].__directives)}`; }));
-                    dirsStr = `@${buildDirectives(node[key].__directives)}`;
+                    if (argsExist) {
+                        argsStr = `(${buildArgs(node[key].__args)})`;
+                    }
+                    const spacer = directivesExist && argsExist ? ' ' : '';
+                    token = `${token} ${dirsStr ? dirsStr : ''}${spacer}${argsStr ? argsStr : ''}`;
                 }
-                if (argsExist) {
-                    argsStr = `(${buildArgs(node[key].__args)})`;
+
+                // DEPRECATED: Should be removed in version 2.0.0
+                if (typeof node[key].__alias === 'string') {
+                    token = `${node[key].__alias}: ${token}`;
                 }
-                const spacer = directivesExist && argsExist ? ' ' : '';
-                token = `${token} ${dirsStr ? dirsStr : ''}${spacer}${argsStr ? argsStr : ''}`;
-            }
-            //Should be removed in version 2.0.0
-            if (typeof node[key].__alias === 'string') {
-                token = `${node[key].__alias}: ${token}`;
-            }
 
-            output.push([ token + (fieldCount > 0 ? ' {' : ''), level ]);
-            convertQuery(node[key], level + 1, output, options);
+                output.push([ token + (fieldCount > 0 ? ' {' : ''), level ]);
+                convertQuery(node[key], level + 1, output, options);
 
-            if (subFields) {
-                output.push([ '}', level ]);
+                if (subFields) {
+                    output.push([ '}', level ]);
+                }
+
+            } else if (node[key]) {
+                output.push([ `${key}`, level ]);
             }
-        } else if (node[key]) {
-            output.push([ `${key}`, level ]);
-        }
     });
 }
 
