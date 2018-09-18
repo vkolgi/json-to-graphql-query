@@ -1,6 +1,11 @@
 
 # json-to-graphql-query Changelog
 
+## 1.7.0
+
+* Added `__aliasFor` option. The old `__alias` syntax did not support more than one alias. Thanks @jeniffer9
+* IMPORTANT: `__alias` is now deprecated and will be removed in version 2.0.0
+
 ## 1.6.0
 
 * Added support for `@client` directives (and other directives that don't need arguments). Thanks @joeflack4!

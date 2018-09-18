@@ -27,7 +27,7 @@ Supported Options:
  * Full support for nested query / mutation nodes and arguments
  * Optionally strip specific object keys using the `ignoreFields` option
  * Support for input arguments via [`__args`](#query-with-arguments)
- * Support for query aliases via [`__alias`](#using-aliases)
+ * Support for query aliases via [`__aliasFor`](#using-aliases)
  * Support for Enum values via [`EnumType`](#query-with-enum-values)
  * Support for variables via [`__variables`](#query-with-variables)
  * Support for simple directives (such as `@client`) via [`__directives`](#query-with-directives)
@@ -178,8 +178,8 @@ import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
 const query = {
     query: {
-        Posts: {
-            __alias: 'allPosts',
+        allPosts: {
+            __aliasFor: 'Posts',
             id: true,
             comments: {
                 id: true,
