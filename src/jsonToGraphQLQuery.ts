@@ -1,7 +1,7 @@
 import { EnumType } from './types/EnumType';
 import { VariableType } from './types/VariableType';
 
-export const configFields = ['__args', '__alias', '__aliasFor', '__variables', '__directives'];
+export const configFields = ['__args', '__alias', '__aliasFor', '__variables', '__directives', '__on', '__fragmentName'];
 
 function stringify(obj_from_json: any): string {
     if (obj_from_json instanceof EnumType) {
@@ -86,6 +86,7 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
                 const subFields = fieldCount > 0;
                 const argsExist = typeof node[key].__args === 'object';
                 const directivesExist = typeof node[key].__directives === 'object';
+                const inlineFragmentsExist = typeof node[key].__on === 'object';
 
                 let token = `${key}`;
 
@@ -121,10 +122,19 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
                     token = `${node[key].__alias}: ${token}`;
                 }
 
-                output.push([ token + (fieldCount > 0 ? ' {' : ''), level ]);
+                output.push([ token + (subFields || inlineFragmentsExist ? ' {' : ''), level ]);
                 convertQuery(node[key], level + 1, output, options);
 
-                if (subFields) {
+                if (inlineFragmentsExist) {
+                    let inlineFragment = node[key].__on;
+                    if (inlineFragment && inlineFragment.__fragmentName) {
+                        output.push([`... on ${inlineFragment.__fragmentName} {`, level + 1]);
+                        convertQuery(inlineFragment, level + 2, output, options);
+                        output.push([ '}', level + 1 ]);
+                    }
+                }
+
+                if (subFields || inlineFragmentsExist) {
                     output.push([ '}', level ]);
                 }
 

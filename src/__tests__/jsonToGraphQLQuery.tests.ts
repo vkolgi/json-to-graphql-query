@@ -431,6 +431,39 @@ describe('jsonToGraphQL()', () => {
 }`);
     });
 
+    it('supports inline fragments', () => {
+        const query = {
+            query: {
+                lorem: {
+                    __on: {
+                        __fragmentName: "subQuery",
+                        id: true
+                    }
+                },
+            }
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { lorem { ... on subQuery { id } } }'
+        );
+    });
+
+    it('supports inline fragments with subfields on same level', () => {
+        const query = {
+            query: {
+                lorem: {
+                    __on: {
+                        __fragmentName: "subQuery",
+                        id: true
+                    },
+                    title: true
+                },
+            }
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { lorem { title ... on subQuery { id } } }'
+        );
+    });
+
     it('we can ignore apollo __typename keys', () => {
         const query = {
             query: {
