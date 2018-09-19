@@ -31,7 +31,7 @@ Supported Options:
  * Support for Enum values via [`EnumType`](#query-with-enum-values)
  * Support for variables via [`__variables`](#query-with-variables)
  * Support for simple directives (such as `@client`) via [`__directives`](#query-with-directives)
- * Support for inline fragments via [`__on`].[`__fragmentName`](#query-with-inline-fragments)
+ * Support for inline fragments via [`__on.__fragmentName`](#query-with-inline-fragments)
 
 ## Recent Changes
 
