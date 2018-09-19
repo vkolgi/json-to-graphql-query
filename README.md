@@ -350,11 +350,11 @@ import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 const query = {
     query: {
         Posts: {
+            title: true
             __on: {
                 __fragmentName: "ConfigurablePost",
                 id: true
-            },
-            title: true
+            }
         }
     }
 };
@@ -366,10 +366,10 @@ Resulting `graphql_query`
 ```graphql
 query {
     Posts {
+        title
         ... on ConfigurablePost {
             id
         }
-        title
     }
 }
 ```
