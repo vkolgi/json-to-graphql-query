@@ -374,6 +374,43 @@ query {
 }
 ```
 
+### Query with multiple Inline Fragments
+```typescript
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+
+const query = {
+            query: {
+                Posts: {
+                    __on: [
+                    {
+                        __fragmentName: "ConfigurablePost",
+                        id: true
+                    },
+                    {
+                        __fragmentName: "UnconfigurablePost",
+                        name: true
+                    }]
+                }
+            }
+        };
+const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
+```
+Resulting `graphql_query`
+
+```graphql
+query {
+    Posts {
+        title
+        ... on ConfigurablePost {
+            id
+        }
+        ... on UnconfigurablePost {
+            name
+        }
+    }
+}
+```
+
 ## TO-DO List
 
  * Support Named Queries / Mutations
