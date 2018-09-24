@@ -126,12 +126,13 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
                 convertQuery(node[key], level + 1, output, options);
 
                 if (inlineFragmentsExist) {
-                    let inlineFragment = node[key].__on;
-                    if (inlineFragment && inlineFragment.__fragmentName) {
-                        output.push([`... on ${inlineFragment.__fragmentName} {`, level + 1]);
+                    let inlineFragments: Array<{__fragmentName: string}> = node[key].__on instanceof Array ? node[key].__on : [node[key].__on];
+                    inlineFragments.forEach((inlineFragment) => {
+                        let name = inlineFragment.__fragmentName;
+                        output.push([`... on ${name} {`, level + 1]);
                         convertQuery(inlineFragment, level + 2, output, options);
                         output.push([ '}', level + 1 ]);
-                    }
+                    });
                 }
 
                 if (subFields || inlineFragmentsExist) {

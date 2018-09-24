@@ -464,6 +464,27 @@ describe('jsonToGraphQL()', () => {
         );
     });
 
+    it('supports multiple inline fragments', () => {
+        const query = {
+            query: {
+                Posts: {
+                    __on: [
+                    {
+                        __fragmentName: "ConfigurablePost",
+                        id: true
+                    },
+                    {
+                        __fragmentName: "UnconfigurablePost",
+                        name: true
+                    }]
+                }
+            }
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { Posts { ... on ConfigurablePost { id } ... on UnconfigurablePost { name } } }'
+        );
+    });
+
     it('we can ignore apollo __typename keys', () => {
         const query = {
             query: {
