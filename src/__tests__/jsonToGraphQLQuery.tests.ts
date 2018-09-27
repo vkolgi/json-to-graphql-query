@@ -436,7 +436,7 @@ describe('jsonToGraphQL()', () => {
             query: {
                 Posts: {
                     __on: {
-                        __fragmentName: 'ConfigurablePost',
+                        __typeName: 'ConfigurablePost',
                         id: true
                     }
                 }
@@ -453,7 +453,7 @@ describe('jsonToGraphQL()', () => {
                 Posts: {
                     title: true,
                     __on: {
-                        __fragmentName: 'ConfigurablePost',
+                        __typeName: 'ConfigurablePost',
                         id: true
                     }
                 }
@@ -470,11 +470,11 @@ describe('jsonToGraphQL()', () => {
                 Posts: {
                     __on: [
                         {
-                            __fragmentName: 'ConfigurablePost',
+                            __typeName: 'ConfigurablePost',
                             id: true
                         },
                         {
-                            __fragmentName: 'UnconfigurablePost',
+                            __typeName: 'UnconfigurablePost',
                             name: true
                         }]
                 }

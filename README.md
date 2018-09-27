@@ -31,7 +31,7 @@ Supported Options:
  * Support for Enum values via [`EnumType`](#query-with-enum-values)
  * Support for variables via [`__variables`](#query-with-variables)
  * Support for simple directives (such as `@client`) via [`__directives`](#query-with-directives)
- * Support for inline fragments via [`__on.__fragmentName`](#query-with-inline-fragments)
+ * Support for one or more inline fragments via [`__on.__typeName`](#query-with-inline-fragments)
 
 ## Recent Changes
 
@@ -352,7 +352,7 @@ const query = {
         Posts: {
             title: true
             __on: {
-                __fragmentName: "ConfigurablePost",
+                __typeName: "ConfigurablePost",
                 id: true
             }
         }
@@ -383,11 +383,11 @@ const query = {
                 Posts: {
                     __on: [
                     {
-                        __fragmentName: "ConfigurablePost",
+                        __typeName: "ConfigurablePost",
                         id: true
                     },
                     {
-                        __fragmentName: "UnconfigurablePost",
+                        __typeName: "UnconfigurablePost",
                         name: true
                     }]
                 }

@@ -1,6 +1,10 @@
 
 # json-to-graphql-query Changelog
 
+## 1.8.0
+
+* Added support for Inline Fragments. Thanks again @jeniffer9 :)
+
 ## 1.7.0
 
 * Added `__aliasFor` option. The old `__alias` syntax did not support more than one alias. Thanks @jeniffer9

@@ -2,7 +2,7 @@ import { EnumType } from './types/EnumType';
 import { VariableType } from './types/VariableType';
 
 export const configFields = [
-    '__args', '__alias', '__aliasFor', '__variables', '__directives', '__on', '__fragmentName'
+    '__args', '__alias', '__aliasFor', '__variables', '__directives', '__on', '__typeName'
 ];
 
 function stringify(obj_from_json: any): string {
@@ -128,10 +128,10 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
                 convertQuery(node[key], level + 1, output, options);
 
                 if (inlineFragmentsExist) {
-                    const inlineFragments: Array<{ __fragmentName: string }>
+                    const inlineFragments: Array<{ __typeName: string }>
                         = node[key].__on instanceof Array ? node[key].__on : [node[key].__on];
                     inlineFragments.forEach((inlineFragment) => {
-                        const name = inlineFragment.__fragmentName;
+                        const name = inlineFragment.__typeName;
                         output.push([`... on ${name} {`, level + 1]);
                         convertQuery(inlineFragment, level + 2, output, options);
                         output.push(['}', level + 1]);
