@@ -1,7 +1,9 @@
 import { EnumType } from './types/EnumType';
 import { VariableType } from './types/VariableType';
 
-export const configFields = ['__args', '__alias', '__aliasFor', '__variables', '__directives'];
+export const configFields = [
+    '__args', '__alias', '__aliasFor', '__variables', '__directives', '__on', '__fragmentName'
+];
 
 function stringify(obj_from_json: any): string {
     if (obj_from_json instanceof EnumType) {
@@ -61,7 +63,7 @@ function buildDirectives(dirsObj: any): string {
     }
     else {
         throw new Error(`Unsupported type for directive: ${typeof directiveValue}. Types allowed: object, boolean.\n` +
-        `Offending object: ${JSON.stringify(dirsObj)}`);
+            `Offending object: ${JSON.stringify(dirsObj)}`);
     }
 }
 
@@ -74,7 +76,7 @@ function filterNonConfigFields(fieldName: string, ignoreFields: string[]) {
     return configFields.indexOf(fieldName) == -1 && ignoreFields.indexOf(fieldName) == -1;
 }
 
-function convertQuery(node: any, level: number, output: Array<[ string, number ]>, options: IJsonToGraphQLOptions) {
+function convertQuery(node: any, level: number, output: Array<[string, number]>, options: IJsonToGraphQLOptions) {
     Object.keys(node)
         .filter((key) => filterNonConfigFields(key, options.ignoreFields))
         .forEach((key) => {
@@ -86,6 +88,7 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
                 const subFields = fieldCount > 0;
                 const argsExist = typeof node[key].__args === 'object';
                 const directivesExist = typeof node[key].__directives === 'object';
+                const inlineFragmentsExist = typeof node[key].__on === 'object';
 
                 let token = `${key}`;
 
@@ -104,8 +107,8 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
                         const numDirectives = Object.keys(node[key].__directives).length;
                         if (numDirectives > 1) {
                             throw new Error(`Too many directives. The object/key ` +
-                            `'${Object.keys(node[key])[0]}' had ${numDirectives} directives, ` +
-                            `but only 1 directive per object/key is supported at this time.`);
+                                `'${Object.keys(node[key])[0]}' had ${numDirectives} directives, ` +
+                                `but only 1 directive per object/key is supported at this time.`);
                         }
                         dirsStr = `@${buildDirectives(node[key].__directives)}`;
                     }
@@ -121,17 +124,28 @@ function convertQuery(node: any, level: number, output: Array<[ string, number ]
                     token = `${node[key].__alias}: ${token}`;
                 }
 
-                output.push([ token + (fieldCount > 0 ? ' {' : ''), level ]);
+                output.push([token + (subFields || inlineFragmentsExist ? ' {' : ''), level]);
                 convertQuery(node[key], level + 1, output, options);
 
-                if (subFields) {
-                    output.push([ '}', level ]);
+                if (inlineFragmentsExist) {
+                    const inlineFragments: Array<{ __fragmentName: string }>
+                        = node[key].__on instanceof Array ? node[key].__on : [node[key].__on];
+                    inlineFragments.forEach((inlineFragment) => {
+                        const name = inlineFragment.__fragmentName;
+                        output.push([`... on ${name} {`, level + 1]);
+                        convertQuery(inlineFragment, level + 2, output, options);
+                        output.push(['}', level + 1]);
+                    });
+                }
+
+                if (subFields || inlineFragmentsExist) {
+                    output.push(['}', level]);
                 }
 
             } else if (node[key]) {
-                output.push([ `${key}`, level ]);
+                output.push([`${key}`, level]);
             }
-    });
+        });
 }
 
 export interface IJsonToGraphQLOptions {
