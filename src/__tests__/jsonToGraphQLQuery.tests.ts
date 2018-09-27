@@ -33,7 +33,7 @@ describe('jsonToGraphQL()', () => {
             }
         };
         expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
-`query {
+            `query {
     Posts {
         id
         title
@@ -57,7 +57,7 @@ describe('jsonToGraphQL()', () => {
             }
         };
         expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
-`query {
+            `query {
     Posts (orderBy: "post_date", userId: 12) {
         id
         title
@@ -84,7 +84,7 @@ describe('jsonToGraphQL()', () => {
             }
         };
         expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
-`query {
+            `query {
     Posts (where: {published: true, rating: {_gt: 3}}, orderBy: "post_date") {
         id
         title
@@ -111,7 +111,7 @@ describe('jsonToGraphQL()', () => {
             }
         };
         expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
-`query {
+            `query {
     Posts (or: [{published: true}, {rating: [{_gt: 3}]}], orderBy: "post_date") {
         id
         title
@@ -137,7 +137,7 @@ describe('jsonToGraphQL()', () => {
             }
         } as any;
         expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
-`query {
+            `query {
     Posts (where: {id: null}, orderBy: null) {
         id
         title
@@ -166,7 +166,7 @@ describe('jsonToGraphQL()', () => {
             }
         } as any;
         expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
-`query {
+            `query {
     Posts @client (where: {id: 10}, orderBy: "flibble") {
         id
         title
@@ -209,8 +209,8 @@ describe('jsonToGraphQL()', () => {
             }
         };
         const expected = 'query { diet @client { id options { ' +
-        'mood { category id selected } weight { category icon id text } } ' +
-        'title } someOtherAbritraryKey @client { arb1 arb2 } }';
+            'mood { category id selected } weight { category icon id text } } ' +
+            'title } someOtherAbritraryKey @client { arb1 arb2 } }';
         expect(jsonToGraphQLQuery(query)).to.equal(expected);
     });
 
@@ -260,7 +260,7 @@ describe('jsonToGraphQL()', () => {
             }
         };
         expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
-`query {
+            `query {
     Posts {
         id
         title
@@ -295,7 +295,7 @@ describe('jsonToGraphQL()', () => {
             }
         };
         expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
-`query {
+            `query {
     Posts (arg1: 20, arg2: "flibble") {
         id
         title
@@ -320,7 +320,7 @@ describe('jsonToGraphQL()', () => {
             }
         };
         expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
-`mutation {
+            `mutation {
     create_post (title: "My Awesome Post", body: "This post is awesome!")
 }`);
     });
@@ -385,24 +385,24 @@ describe('jsonToGraphQL()', () => {
     });
 
     it('does not include fields which value is false', () => {
-      const query = {
-        query: {
-            Posts: {
-                __args: {
-                  a: false
+        const query = {
+            query: {
+                Posts: {
+                    __args: {
+                        a: false
+                    },
+                    id: true,
+                    name: false
                 },
-                id: true,
-                name: false
-            },
-            Lorem: {
-              id: true
-            },
-            Ipsum: false
-        }
-      };
-      expect(jsonToGraphQLQuery(query)).to.equal(
-        'query { Posts (a: false) { id } Lorem { id } }'
-      );
+                Lorem: {
+                    id: true
+                },
+                Ipsum: false
+            }
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { Posts (a: false) { id } Lorem { id } }'
+        );
     });
 
     it('ignores a field that exists in the initial object', () => {
@@ -436,7 +436,7 @@ describe('jsonToGraphQL()', () => {
             query: {
                 Posts: {
                     __on: {
-                        __fragmentName: "ConfigurablePost",
+                        __fragmentName: 'ConfigurablePost',
                         id: true
                     }
                 }
@@ -453,7 +453,7 @@ describe('jsonToGraphQL()', () => {
                 Posts: {
                     title: true,
                     __on: {
-                        __fragmentName: "ConfigurablePost",
+                        __fragmentName: 'ConfigurablePost',
                         id: true
                     }
                 }
@@ -469,14 +469,14 @@ describe('jsonToGraphQL()', () => {
             query: {
                 Posts: {
                     __on: [
-                    {
-                        __fragmentName: "ConfigurablePost",
-                        id: true
-                    },
-                    {
-                        __fragmentName: "UnconfigurablePost",
-                        name: true
-                    }]
+                        {
+                            __fragmentName: 'ConfigurablePost',
+                            id: true
+                        },
+                        {
+                            __fragmentName: 'UnconfigurablePost',
+                            name: true
+                        }]
                 }
             }
         };
