@@ -405,6 +405,27 @@ describe('jsonToGraphQL()', () => {
         );
     });
 
+    it('includes fields with falsy values if includeFalsyKeys is true', () => {
+        const query = {
+            query: {
+                Posts: {
+                    __args: {
+                        a: false
+                    },
+                    id: '',
+                    name: ''
+                },
+                Lorem: {
+                    id: ''
+                },
+                Ipsum: false
+            }
+        };
+        expect(jsonToGraphQLQuery(query, { includeFalsyKeys: true })).to.equal(
+            'query { Posts (a: false) { id name } Lorem { id } Ipsum }'
+        );
+    });
+
     it('ignores a field that exists in the initial object', () => {
         const query = {
             query: {

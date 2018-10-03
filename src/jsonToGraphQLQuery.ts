@@ -142,7 +142,7 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
                     output.push(['}', level]);
                 }
 
-            } else if (node[key]) {
+            } else if (options.includeFalsyKeys === true || node[key]) {
                 output.push([`${key}`, level]);
             }
         });
@@ -151,6 +151,7 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
 export interface IJsonToGraphQLOptions {
     pretty?: boolean;
     ignoreFields?: string[];
+    includeFalsyKeys?: boolean;
 }
 
 export function jsonToGraphQLQuery(query: any, options: IJsonToGraphQLOptions = {}) {
