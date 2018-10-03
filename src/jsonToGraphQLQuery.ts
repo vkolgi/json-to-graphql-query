@@ -83,10 +83,8 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
             let value = node[key]
             if (typeof value === 'object') {
                 if (Array.isArray(value)) {
-                    if (value[0] && typeof value[0] === 'object') {
-                        value = value[0]
-                    }
-                    else {
+                    value = value.find(item => item && typeof item === 'object')
+                    if (!value) {
                         output.push([`${key}`, level])
                         return
                     }

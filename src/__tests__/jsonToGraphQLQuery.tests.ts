@@ -500,6 +500,36 @@ describe('jsonToGraphQL()', () => {
         );
     });
 
+    it('handles arrays of strings by adding the key but no values to the query', () => {
+        const query = {
+            query: {
+                Posts: ['test 1', 'test 2', 'test 3'],
+                Lorem: {
+                    id: true
+                },
+                Ipsum: false,
+            }
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { Posts Lorem { id } }'
+        );
+    });
+
+    it('handles arrays of mixed types by taking the first object of the array', () => {
+        const query = {
+            query: {
+                Posts: [1, null, { id: true, name: true }],
+                Lorem: {
+                    id: true
+                },
+                Ipsum: false,
+            }
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { Posts { id name } Lorem { id } }'
+        );
+    });
+
     it('handles arrays of string by adding the key but no values to the query', () => {
         const Posts: any[] = [null]
         const query = {
