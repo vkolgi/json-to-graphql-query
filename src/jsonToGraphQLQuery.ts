@@ -80,56 +80,65 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
     Object.keys(node)
         .filter((key) => filterNonConfigFields(key, options.ignoreFields))
         .forEach((key) => {
+            let value = node[key]
+            if (typeof value === 'object') {
+                if (Array.isArray(value)) {
+                    if (value[0] && typeof value[0] === 'object') {
+                        value = value[0]
+                    }
+                    else {
+                        output.push([`${key}`, level])
+                        return
+                    }
+                }
 
-            if (typeof node[key] === 'object') {
-
-                const fieldCount = Object.keys(node[key])
+                const fieldCount = Object.keys(value)
                     .filter((keyCount) => filterNonConfigFields(keyCount, options.ignoreFields)).length;
                 const subFields = fieldCount > 0;
-                const argsExist = typeof node[key].__args === 'object';
-                const directivesExist = typeof node[key].__directives === 'object';
-                const inlineFragmentsExist = typeof node[key].__on === 'object';
+                const argsExist = typeof value.__args === 'object';
+                const directivesExist = typeof value.__directives === 'object';
+                const inlineFragmentsExist = typeof value.__on === 'object';
 
                 let token = `${key}`;
 
-                if (typeof node[key].__aliasFor === 'string') {
-                    token = `${token}: ${node[key].__aliasFor}`;
+                if (typeof value.__aliasFor === 'string') {
+                    token = `${token}: ${value.__aliasFor}`;
                 }
 
-                if (typeof node[key].__variables === 'object') {
-                    token = `${token} (${buildVariables(node[key].__variables)})`;
+                if (typeof value.__variables === 'object') {
+                    token = `${token} (${buildVariables(value.__variables)})`;
                 }
                 else if (argsExist || directivesExist) {
                     let argsStr: string;
                     let dirsStr: string;
                     if (directivesExist) {
                         // TODO: Add support for multiple directives on one node.
-                        const numDirectives = Object.keys(node[key].__directives).length;
+                        const numDirectives = Object.keys(value.__directives).length;
                         if (numDirectives > 1) {
                             throw new Error(`Too many directives. The object/key ` +
-                                `'${Object.keys(node[key])[0]}' had ${numDirectives} directives, ` +
+                                `'${Object.keys(value)[0]}' had ${numDirectives} directives, ` +
                                 `but only 1 directive per object/key is supported at this time.`);
                         }
-                        dirsStr = `@${buildDirectives(node[key].__directives)}`;
+                        dirsStr = `@${buildDirectives(value.__directives)}`;
                     }
                     if (argsExist) {
-                        argsStr = `(${buildArgs(node[key].__args)})`;
+                        argsStr = `(${buildArgs(value.__args)})`;
                     }
                     const spacer = directivesExist && argsExist ? ' ' : '';
                     token = `${token} ${dirsStr ? dirsStr : ''}${spacer}${argsStr ? argsStr : ''}`;
                 }
 
                 // DEPRECATED: Should be removed in version 2.0.0
-                if (typeof node[key].__alias === 'string') {
-                    token = `${node[key].__alias}: ${token}`;
+                if (typeof value.__alias === 'string') {
+                    token = `${value.__alias}: ${token}`;
                 }
 
                 output.push([token + (subFields || inlineFragmentsExist ? ' {' : ''), level]);
-                convertQuery(node[key], level + 1, output, options);
+                convertQuery(value, level + 1, output, options);
 
                 if (inlineFragmentsExist) {
                     const inlineFragments: Array<{ __typeName: string }>
-                        = node[key].__on instanceof Array ? node[key].__on : [node[key].__on];
+                        = value.__on instanceof Array ? value.__on : [value.__on];
                     inlineFragments.forEach((inlineFragment) => {
                         const name = inlineFragment.__typeName;
                         output.push([`... on ${name} {`, level + 1]);
@@ -142,7 +151,7 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
                     output.push(['}', level]);
                 }
 
-            } else if (options.includeFalsyKeys === true || node[key]) {
+            } else if (options.includeFalsyKeys === true || value) {
                 output.push([`${key}`, level]);
             }
         });

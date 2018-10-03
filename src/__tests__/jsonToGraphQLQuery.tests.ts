@@ -426,6 +426,116 @@ describe('jsonToGraphQL()', () => {
         );
     });
 
+    it('gets keys from an array instead of adding the index as a key', () => {
+        const query = {
+            query: {
+                Posts: [{
+                    id: true,
+                    name: true,
+                }],
+                Lorem: {
+                    id: true
+                },
+                Ipsum: false,
+            }
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { Posts { id name } Lorem { id } }'
+        );
+    });
+
+    it('gets keys from an array instead of adding the index as a key and print pretty', () => {
+        const query = {
+            query: {
+                Posts: [{
+                    id: true,
+                    name: true,
+                }],
+                Lorem: {
+                    id: true
+                },
+                Ipsum: false,
+            }
+        };
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
+            `query {
+    Posts {
+        id
+        name
+    }
+    Lorem {
+        id
+    }
+}`);
+    });
+
+    it('handles empty arrays by adding the key but no values to the query', () => {
+        const Posts: any[] = []
+        const query = {
+            query: {
+                Posts,
+                Lorem: {
+                    id: true
+                },
+                Ipsum: false,
+            }
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { Posts Lorem { id } }'
+        );
+    });
+
+    it('handles arrays of numbers by adding the key but no values to the query', () => {
+        const query = {
+            query: {
+                Posts: [1, 2, 3],
+                Lorem: {
+                    id: true
+                },
+                Ipsum: false,
+            }
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { Posts Lorem { id } }'
+        );
+    });
+
+    it('handles arrays of string by adding the key but no values to the query', () => {
+        const Posts: any[] = [null]
+        const query = {
+            query: {
+                Posts,
+                Lorem: {
+                    id: true
+                },
+                Ipsum: false,
+            }
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { Posts Lorem { id } }'
+        );
+    });
+
+    it('handles arrays of string by adding the key but no values to the query and print pretty', () => {
+        const Posts: any[] = []
+        const query = {
+            query: {
+                Posts,
+                Lorem: {
+                    id: true
+                },
+                Ipsum: false,
+            }
+        };
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
+            `query {
+    Posts
+    Lorem {
+        id
+    }
+}`);
+    });
+
     it('ignores a field that exists in the initial object', () => {
         const query = {
             query: {
