@@ -1,6 +1,13 @@
 
 # json-to-graphql-query Changelog
 
+## 1.9.0
+
+* Added support for array values. We now use the first object found in an array for the
+  node names. If the array does not contain an object, we just return the corresponding key.
+* Added `includeFalsyKeys` option, to disable the default behaviour of excluding keys with falsy values.
+  Thanks @bret-hubbard for both of these additions :)
+
 ## 1.8.0
 
 * Added support for Inline Fragments. Thanks again @jeniffer9 :)

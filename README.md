@@ -20,6 +20,7 @@ const query = jsonToGraphQLQuery(queryObject: object, options?: object);
 Supported Options:
  * `pretty` - boolean - optional - set to `true` to enable pretty-printed output
  * `ignoreFields` - string[] - optional - you can pass an array of object key names that you want removed from the query
+ * `includeFalsyKeys` - boolean - optional - disable the default behaviour if excluding keys with a falsy value
 
 ## Features
 
@@ -171,6 +172,8 @@ query {
     }
 }
 ```
+NOTE: You can tell jsonToGraphQLQuery() not to exclude keys with a falsy value
+by setting the `includeFalsyKeys` option.
 
 ### Using aliases
 
