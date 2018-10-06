@@ -80,13 +80,13 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
     Object.keys(node)
         .filter((key) => filterNonConfigFields(key, options.ignoreFields))
         .forEach((key) => {
-            let value = node[key]
+            let value = node[key];
             if (typeof value === 'object') {
                 if (Array.isArray(value)) {
-                    value = value.find(item => item && typeof item === 'object')
+                    value = value.find((item) => item && typeof item === 'object');
                     if (!value) {
-                        output.push([`${key}`, level])
-                        return
+                        output.push([`${key}`, level]);
+                        return;
                     }
                 }
 

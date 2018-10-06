@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import { jsonToGraphQLQuery } from '../';
 
-describe('jsonToGraphQL() - node conversion', () => {
+describe('jsonToGraphQLQuery() - node conversion', () => {
 
     it('throws if no query object is specified', () => {
         expect(() => {

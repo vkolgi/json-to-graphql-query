@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import { jsonToGraphQLQuery } from '../';
 
-describe('jsonToGraphQL() - ignoreFields option', () => {
+describe('jsonToGraphQLQuery() - ignoreFields option', () => {
 
     it('ignores a field that exists in the initial object', () => {
         const query = {

@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import { jsonToGraphQLQuery } from '../';
 
-describe('jsonToGraphQL() - falsy keys', () => {
+describe('jsonToGraphQLQuery() - falsy keys', () => {
 
     it('does not include fields which value is false', () => {
         const query = {

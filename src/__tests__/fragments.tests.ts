@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import { jsonToGraphQLQuery } from '../';
 
-describe('jsonToGraphQL() - fragments', () => {
+describe('jsonToGraphQLQuery() - fragments', () => {
 
     it('supports inline fragments', () => {
         const query = {

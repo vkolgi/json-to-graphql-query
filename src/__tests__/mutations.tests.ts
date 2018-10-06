@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import { jsonToGraphQLQuery } from '../';
 
-describe('jsonToGraphQL() - mutations', () => {
+describe('jsonToGraphQLQuery() - mutations', () => {
 
     it('correctly converts mutations with no specified return fields', () => {
         const query = {

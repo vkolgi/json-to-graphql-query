@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import { jsonToGraphQLQuery } from '../';
 
-describe('jsonToGraphQL() - directives', () => {
+describe('jsonToGraphQLQuery() - directives', () => {
 
     it('converts a simple query with args and directives with no arguments', () => {
         const query = {

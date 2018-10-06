@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import { jsonToGraphQLQuery } from '../';
 
-describe('jsonToGraphQL() - aliases', () => {
+describe('jsonToGraphQLQuery() - aliases', () => {
 
     it('uses aliases for fields', () => {
         // Deprecated...
