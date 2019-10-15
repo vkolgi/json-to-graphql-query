@@ -56,7 +56,7 @@ function buildDirectives(dirsObj: any): string {
     else if (typeof directiveValue === 'object') {
         const args = [];
         for (const argName in directiveValue) {
-            const argVal = stringify(directiveValue[argName]).replace(/"/g, '');
+            const argVal = stringify(directiveValue[argName]);
             args.push(`${argName}: ${argVal}`);
         }
         return `${directiveName}(${args.join(', ')})`;
@@ -109,6 +109,7 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
                 else if (argsExist || directivesExist) {
                     let argsStr: string;
                     let dirsStr: string;
+                    let dirStrIsRest: boolean = false;
                     if (directivesExist) {
                         // TODO: Add support for multiple directives on one node.
                         const numDirectives = Object.keys(value.__directives).length;
@@ -122,8 +123,12 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
                     if (argsExist) {
                         argsStr = `(${buildArgs(value.__args)})`;
                     }
+                    if (dirsStr && dirsStr.includes('@rest')) {
+                        dirStrIsRest = true
+                    }
                     const spacer = directivesExist && argsExist ? ' ' : '';
-                    token = `${token} ${dirsStr ? dirsStr : ''}${spacer}${argsStr ? argsStr : ''}`;
+
+                    token = `${token}${dirStrIsRest && argsStr ? ` ${argsStr} ` : ' '}${dirsStr ? dirsStr : ''}${spacer}${!dirStrIsRest && argsStr ? argsStr : ''}`;
                 }
 
                 // DEPRECATED: Should be removed in version 2.0.0
