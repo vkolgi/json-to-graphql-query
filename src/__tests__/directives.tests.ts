@@ -33,6 +33,70 @@ describe('jsonToGraphQLQuery() - directives', () => {
 }`);
     });
 
+    it('places args in front of drirective if it is @rest', () => {
+        const path = "/foo"
+        
+        const query = {
+            query: {
+                Posts: {
+                    __args: {
+                        where: {
+                            id: 10,
+                        },
+                        orderBy: 'flibble'
+                    },
+                    __directives: {
+                        rest: { path }
+                    },
+                    id: true,
+                    title: true,
+                    post_date: true
+                }
+            }
+        } as any;
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
+            `query {
+    Posts (where: {id: 10}, orderBy: "flibble") @rest(path: "/foo")  {
+        id
+        title
+        post_date
+    }
+}`);
+    });
+
+    it('returns strings, arrays and objects in the directive args', () => {
+        const string = "/foo"
+        const object = { bar: 'baz' }
+        const array = ["complexities", "of", "naming", "conventions"]
+        
+        const query = {
+            query: {
+                Posts: {
+                    __args: {
+                        where: {
+                            id: 10,
+                        },
+                        orderBy: 'flibble'
+                    },
+                    __directives: {
+                        client: { string, object, array }
+                    },
+                    id: true,
+                    title: true,
+                    post_date: true
+                }
+            }
+        } as any;
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
+            `query {
+    Posts @client(string: "/foo", object: {bar: "baz"}, array: ["complexities", "of", "naming", "conventions"]) (where: {id: 10}, orderBy: "flibble") {
+        id
+        title
+        post_date
+    }
+}`);
+    });
+
     it('converts a complex query with directives with no arguments', () => {
         const query = {
             query: {
