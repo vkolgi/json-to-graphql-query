@@ -95,7 +95,7 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
                 const subFields = fieldCount > 0;
                 const argsExist = typeof value.__args === 'object';
                 const directivesExist = typeof value.__directives === 'object';
-                const inlineFragmentsExist = typeof value.__on === 'object';
+                const inlineFragmentsExist = typeof value.__on === 'object' || typeof value.__on === 'string';
 
                 let token = `${key}`;
 
@@ -135,6 +135,7 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
                 convertQuery(value, level + 1, output, options);
 
                 if (inlineFragmentsExist) {
+                  if (typeof value.__on === 'object') {
                     const inlineFragments: Array<{ __typeName: string }>
                         = value.__on instanceof Array ? value.__on : [value.__on];
                     inlineFragments.forEach((inlineFragment) => {
@@ -143,6 +144,10 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
                         convertQuery(inlineFragment, level + 2, output, options);
                         output.push(['}', level + 1]);
                     });
+                  } else if (typeof value.__on === 'string') {
+                    const inlineFragment: string = value.__on;
+                    output.push([`... ${inlineFragment}`, level + 1]);
+                  }
                 }
 
                 if (subFields || inlineFragmentsExist) {
