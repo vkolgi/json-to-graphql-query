@@ -127,11 +127,6 @@ function convertQuery(node: any, level: number, output: [string, number][], opti
                     token = `${token} ${dirsStr}${spacer}${argsStr}`;
                 }
 
-                // DEPRECATED: Should be removed in version 2.0.0
-                if (typeof value.__alias === 'string') {
-                    token = `${value.__alias}: ${token}`;
-                }
-
                 output.push([token + (subFields || partialFragmentsExist || fullFragmentsExist ? ' {' : ''), level]);
                 convertQuery(value, level + 1, output, options);
 

@@ -4,24 +4,6 @@ import { jsonToGraphQLQuery } from '../';
 
 describe('jsonToGraphQLQuery() - aliases', () => {
 
-    it('uses aliases for fields', () => {
-        // Deprecated...
-        const query = {
-            query: {
-                Posts: {
-                    __alias: 'lorem',
-                    __args: {
-                        arg1: 20,
-                    },
-                    id: true
-                }
-            }
-        };
-        expect(jsonToGraphQLQuery(query)).to.equal(
-            'query { lorem: Posts (arg1: 20) { id } }'
-        );
-    });
-
     it('supports multiple aliases for one type', () => {
         const query = {
             query: {

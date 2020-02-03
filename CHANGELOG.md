@@ -1,6 +1,12 @@
 
 # json-to-graphql-query Changelog
 
+## 2.0.0
+
+* Update to TypeScript 3.7
+* Support for full inline fragments (thanks @ConnorWhite)
+* Remove deprecated `__alias` (use `__aliasFor` instead)
+
 ## 1.9.0
 
 * Added support for array values. We now use the first object found in an array for the
@@ -37,8 +43,3 @@
 ## 1.2.0
 
 * Added Enum support, thanks @douglaseggleton
-
-## 2.0.0
-
-* Update to TypeScript 3.7
-* Support for full inline fragments (thanks @ConnorWhite)
