@@ -58,4 +58,17 @@ describe('jsonToGraphQLQuery() - fragments', () => {
         );
     });
 
+    it('supports full inline fragments', () => {
+      const query = {
+          query: {
+              Posts: {
+                  __on: 'ConfigurablePost'
+              }
+          }
+      };
+      expect(jsonToGraphQLQuery(query)).to.equal(
+          'query { Posts { ... ConfigurablePost } }'
+      );
+  });
+
 });
