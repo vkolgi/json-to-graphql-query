@@ -33,6 +33,7 @@ Supported Options:
  * Support for variables via [`__variables`](#query-with-variables)
  * Support for simple directives (such as `@client`) via [`__directives`](#query-with-directives)
  * Support for one or more inline fragments via [`__on.__typeName`](#query-with-inline-fragments)
+ * Support for full fragments via [`__all_on`](#query-with-inline-fragments)
 
 ## Recent Changes
 
@@ -347,13 +348,46 @@ query {
 
 ### Query with Inline Fragments
 
+Full inline fragments
+
 ```typescript
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
 const query = {
     query: {
         Posts: {
-            title: true
+            title: true,
+            __all_on: [
+                "ConfigurablePost",
+                "PageInfo"
+            ]
+        }
+    }
+};
+const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
+```
+
+Resulting `graphql_query`
+
+```graphql
+query {
+    Posts {
+        title
+        ...ConfigurablePost
+        ...PageInfo
+    }
+}
+```
+
+Partial inline fragments
+
+```typescript
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+
+const query = {
+    query: {
+        Posts: {
+            title: true,
             __on: {
                 __typeName: "ConfigurablePost",
                 id: true

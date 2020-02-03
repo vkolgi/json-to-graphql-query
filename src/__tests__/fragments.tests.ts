@@ -62,12 +62,15 @@ describe('jsonToGraphQLQuery() - fragments', () => {
       const query = {
           query: {
               Posts: {
-                  __on: 'ConfigurablePost'
+                  __all_on: [
+                      'ConfigurablePost',
+                      'PageInfo'
+                  ]
               }
           }
       };
       expect(jsonToGraphQLQuery(query)).to.equal(
-          'query { Posts { ... ConfigurablePost } }'
+          'query { Posts { ...ConfigurablePost ...PageInfo } }'
       );
   });
 

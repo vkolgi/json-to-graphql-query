@@ -2,7 +2,7 @@ import { EnumType } from './types/EnumType';
 import { VariableType } from './types/VariableType';
 
 export const configFields = [
-    '__args', '__alias', '__aliasFor', '__variables', '__directives', '__on', '__typeName'
+    '__args', '__alias', '__aliasFor', '__variables', '__directives', '__on', '__all_on', '__typeName'
 ];
 
 function stringify(obj_from_json: any): string {
@@ -95,7 +95,8 @@ function convertQuery(node: any, level: number, output: [string, number][], opti
                 const subFields = fieldCount > 0;
                 const argsExist = typeof value.__args === 'object';
                 const directivesExist = typeof value.__directives === 'object';
-                const inlineFragmentsExist = typeof value.__on === 'object' || typeof value.__on === 'string';
+                const fullFragmentsExist = value.__all_on instanceof Array;
+                const partialFragmentsExist = typeof value.__on === 'object';
 
                 let token = `${key}`;
 
@@ -131,11 +132,15 @@ function convertQuery(node: any, level: number, output: [string, number][], opti
                     token = `${value.__alias}: ${token}`;
                 }
 
-                output.push([token + (subFields || inlineFragmentsExist ? ' {' : ''), level]);
+                output.push([token + (subFields || partialFragmentsExist || fullFragmentsExist ? ' {' : ''), level]);
                 convertQuery(value, level + 1, output, options);
 
-                if (inlineFragmentsExist) {
-                  if (typeof value.__on === 'object') {
+                if (fullFragmentsExist) {
+                    value.__all_on.forEach((fullFragment: string) => {
+                        output.push([`...${fullFragment}`, level + 1]);
+                    });
+                }
+                if (partialFragmentsExist) {
                     const inlineFragments: { __typeName: string }[]
                         = value.__on instanceof Array ? value.__on : [value.__on];
                     inlineFragments.forEach((inlineFragment) => {
@@ -144,13 +149,9 @@ function convertQuery(node: any, level: number, output: [string, number][], opti
                         convertQuery(inlineFragment, level + 2, output, options);
                         output.push(['}', level + 1]);
                     });
-                  } else if (typeof value.__on === 'string') {
-                    const inlineFragment: string = value.__on;
-                    output.push([`... ${inlineFragment}`, level + 1]);
-                  }
                 }
 
-                if (subFields || inlineFragmentsExist) {
+                if (subFields || partialFragmentsExist || fullFragmentsExist) {
                     output.push(['}', level]);
                 }
 

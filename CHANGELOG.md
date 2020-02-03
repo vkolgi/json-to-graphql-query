@@ -41,3 +41,4 @@
 ## 2.0.0
 
 * Update to TypeScript 3.7
+* Support for full inline fragments (thanks @ConnorWhite)
