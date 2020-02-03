@@ -76,9 +76,9 @@ function filterNonConfigFields(fieldName: string, ignoreFields: string[]) {
     return configFields.indexOf(fieldName) == -1 && ignoreFields.indexOf(fieldName) == -1;
 }
 
-function convertQuery(node: any, level: number, output: Array<[string, number]>, options: IJsonToGraphQLOptions) {
+function convertQuery(node: any, level: number, output: [string, number][], options: IJsonToGraphQLOptions) {
     Object.keys(node)
-        .filter((key) => filterNonConfigFields(key, options.ignoreFields))
+        .filter((key) => filterNonConfigFields(key, options.ignoreFields!))
         .forEach((key) => {
             let value = node[key];
             if (typeof value === 'object') {
@@ -91,7 +91,7 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
                 }
 
                 const fieldCount = Object.keys(value)
-                    .filter((keyCount) => filterNonConfigFields(keyCount, options.ignoreFields)).length;
+                    .filter((keyCount) => filterNonConfigFields(keyCount, options.ignoreFields!)).length;
                 const subFields = fieldCount > 0;
                 const argsExist = typeof value.__args === 'object';
                 const directivesExist = typeof value.__directives === 'object';
@@ -107,8 +107,8 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
                     token = `${token} (${buildVariables(value.__variables)})`;
                 }
                 else if (argsExist || directivesExist) {
-                    let argsStr: string;
-                    let dirsStr: string;
+                    let argsStr = '';
+                    let dirsStr = '';
                     if (directivesExist) {
                         // TODO: Add support for multiple directives on one node.
                         const numDirectives = Object.keys(value.__directives).length;
@@ -123,7 +123,7 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
                         argsStr = `(${buildArgs(value.__args)})`;
                     }
                     const spacer = directivesExist && argsExist ? ' ' : '';
-                    token = `${token} ${dirsStr ? dirsStr : ''}${spacer}${argsStr ? argsStr : ''}`;
+                    token = `${token} ${dirsStr}${spacer}${argsStr}`;
                 }
 
                 // DEPRECATED: Should be removed in version 2.0.0
@@ -135,7 +135,7 @@ function convertQuery(node: any, level: number, output: Array<[string, number]>,
                 convertQuery(value, level + 1, output, options);
 
                 if (inlineFragmentsExist) {
-                    const inlineFragments: Array<{ __typeName: string }>
+                    const inlineFragments: { __typeName: string }[]
                         = value.__on instanceof Array ? value.__on : [value.__on];
                     inlineFragments.forEach((inlineFragment) => {
                         const name = inlineFragment.__typeName;
@@ -172,7 +172,7 @@ export function jsonToGraphQLQuery(query: any, options: IJsonToGraphQLOptions = 
         options.ignoreFields = [];
     }
 
-    const queryLines: Array<[string, number]> = [];
+    const queryLines: [string, number][] = [];
     convertQuery(query, 0, queryLines, options);
 
     let output = '';

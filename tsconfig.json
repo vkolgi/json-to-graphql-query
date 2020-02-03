@@ -9,6 +9,7 @@
         "experimentalDecorators": true,
         "removeComments": true,
         "noUnusedLocals": true,
+        "strict": true,
         "lib": [
             "es2015"
         ]

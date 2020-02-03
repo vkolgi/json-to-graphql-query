@@ -37,3 +37,7 @@
 ## 1.2.0
 
 * Added Enum support, thanks @douglaseggleton
+
+## 2.0.0
+
+* Update to TypeScript 3.7
