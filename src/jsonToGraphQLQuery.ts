@@ -2,7 +2,7 @@ import { EnumType } from './types/EnumType';
 import { VariableType } from './types/VariableType';
 
 export const configFields = [
-    '__args', '__alias', '__aliasFor', '__variables', '__directives', '__on', '__all_on', '__typeName'
+    '__args', '__alias', '__aliasFor', '__variables', '__directives', '__on', '__all_on', '__typeName', '__name'
 ];
 
 function stringify(obj_from_json: any): string {
@@ -99,6 +99,10 @@ function convertQuery(node: any, level: number, output: [string, number][], opti
                 const partialFragmentsExist = typeof value.__on === 'object';
 
                 let token = `${key}`;
+
+                if (typeof value.__name === 'string') {
+                    token = `${token} ${value.__name}`;
+                }
 
                 if (typeof value.__aliasFor === 'string') {
                     token = `${token}: ${value.__aliasFor}`;

@@ -412,6 +412,7 @@ query {
 ```
 
 ### Query with multiple Inline Fragments
+
 ```typescript
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
@@ -444,6 +445,42 @@ query {
         ... on UnconfigurablePost {
             name
         }
+    }
+}
+```
+
+### Query with name
+
+```typescript
+import { jsonToGraphQLQuery, VariableType } from 'json-to-graphql-query';
+
+const query = {
+    query: {
+        __name: 'NewName',
+        __variables: {
+            variable1: 'String!',
+            variableWithDefault: 'String = "default_value"'
+        },
+        Posts: {
+            __args: {
+                arg1: 20,
+                arg2: new VariableType('variable1')
+            },
+            id: true,
+            title: true
+        }
+    }
+};
+const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
+```
+
+Resulting `graphql_query`
+
+```graphql
+query NewName ($variable1: String!, $variableWithDefault: String = "default_value") {
+    Posts (arg1: 20, arg2: $variable1) {
+        id
+        title
     }
 }
 ```
