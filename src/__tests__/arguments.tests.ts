@@ -161,4 +161,19 @@ describe('jsonToGraphQLQuery() - arguments', () => {
         );
     });
 
+    it('Empty args object should not generate parentheses', () => {
+        const query = {
+            query: {
+                Posts: {
+                    __args: {},
+                    id: true,
+                    title: true
+                }
+            }
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { Posts { id title } }'
+        );
+    });
+
 });

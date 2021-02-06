@@ -93,7 +93,7 @@ function convertQuery(node: any, level: number, output: [string, number][], opti
                 const fieldCount = Object.keys(value)
                     .filter((keyCount) => filterNonConfigFields(keyCount, options.ignoreFields!)).length;
                 const subFields = fieldCount > 0;
-                const argsExist = typeof value.__args === 'object';
+                const argsExist = typeof value.__args === 'object' && Object.keys(value.__args).length > 0;
                 const directivesExist = typeof value.__directives === 'object';
                 const fullFragmentsExist = value.__all_on instanceof Array;
                 const partialFragmentsExist = typeof value.__on === 'object';
