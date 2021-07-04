@@ -5,10 +5,10 @@ GraphQL query to be sent to a GraphQL server.
 
 Mainly useful for applications that need to generate graphql queries dynamically.
 
-## LOOKING FOR A NEW MAINTENER
+## New Maintainer!
 
-I'm not working much with GraphQL at the moment, so if anyone is keen on taking
-over maintaince of this library I'd be happy to transfer it.
+Huge thanks to @vkolgi for agreeing to take over maintenance of this library! I look forward to
+following its continued development. - @dupski
 
 ## Installation
 

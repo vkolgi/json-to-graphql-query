@@ -1,6 +1,10 @@
 
 # json-to-graphql-query Changelog
 
+## 2.0.1
+
+* Transfer ownership to @vkolgi - thanks for taking the reins!
+
 ## 2.0.0
 
 * Update to TypeScript 3.7
