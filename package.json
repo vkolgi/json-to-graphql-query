@@ -12,13 +12,13 @@
     "typings": "lib/index.d.ts",
     "repository": {
         "type": "git",
-        "url": "https://github.com/dupski/json-to-graphql-query.git"
+        "url": "https://github.com/vkolgi/json-to-graphql-query.git"
     },
     "devDependencies": {
         "@types/chai": "4.2.8",
         "@types/mocha": "7.0.1",
         "chai": "4.2.0",
-        "mocha": "7.0.1",
+        "mocha": "7.2.0",
         "sinon": "8.1.1",
         "ts-node": "8.6.2",
         "tslint": "6.0.0",

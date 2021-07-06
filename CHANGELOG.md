@@ -1,6 +1,10 @@
 
 # json-to-graphql-query Changelog
 
+## 2.0.2
+
+* Update package dependencies to handle security vulnerabilties
+
 ## 2.0.1
 
 * Transfer ownership to @vkolgi - thanks for taking the reins!
