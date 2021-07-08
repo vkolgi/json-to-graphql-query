@@ -1,20 +1,20 @@
-import { expect } from "chai";
-import { jsonToGraphQLQuery, EnumType, VariableType } from "../";
+import { expect } from 'chai';
+import { jsonToGraphQLQuery, EnumType, VariableType } from '../';
 
-describe("jsonToGraphQLQuery() - name", () => {
-    it("supports Named Queries", () => {
+describe('jsonToGraphQLQuery() - name', () => {
+    it('supports Named Queries', () => {
         const query = {
             query: {
-                __name: "NewName",
+                __name: 'NewName',
                 lorem: {
-                    __aliasFor: "Posts",
+                    __aliasFor: 'Posts',
                     __args: {
                         arg1: 20,
                     },
                     id: true,
                 },
                 larem: {
-                    __aliasFor: "Posts",
+                    __aliasFor: 'Posts',
                     __args: {
                         arg2: 10,
                     },
@@ -23,23 +23,23 @@ describe("jsonToGraphQLQuery() - name", () => {
             },
         };
         expect(jsonToGraphQLQuery(query)).to.equal(
-            "query NewName { lorem: Posts (arg1: 20) { id } larem: Posts (arg2: 10) { id } }"
+            'query NewName { lorem: Posts (arg1: 20) { id } larem: Posts (arg2: 10) { id } }'
         );
     });
 
-    it("supports Named Mutations", () => {
+    it('supports Named Mutations', () => {
         const query = {
             mutation: {
-                __name: "NewName",
+                __name: 'NewName',
                 one: {
-                    __aliasFor: "Posts",
+                    __aliasFor: 'Posts',
                     __args: {
                         arg1: 20,
                     },
                     id: true,
                 },
                 two: {
-                    __aliasFor: "Posts",
+                    __aliasFor: 'Posts',
                     __args: {
                         arg2: 10,
                     },
@@ -48,24 +48,24 @@ describe("jsonToGraphQLQuery() - name", () => {
             },
         };
         expect(jsonToGraphQLQuery(query)).to.equal(
-            "mutation NewName { one: Posts (arg1: 20) { id } two: Posts (arg2: 10) { id } }"
+            'mutation NewName { one: Posts (arg1: 20) { id } two: Posts (arg2: 10) { id } }'
         );
     });
 });
 
-describe("jsonToGraphQLQuery() - combinations", () => {
-    it("correctly converts query with name/variables", () => {
+describe('jsonToGraphQLQuery() - combinations', () => {
+    it('correctly converts query with name/variables', () => {
         const query = {
             query: {
-                __name: "NewName",
+                __name: 'NewName',
                 __variables: {
-                    variable1: "String!",
+                    variable1: 'String!',
                     variableWithDefault: 'String = "default_value"',
                 },
                 Posts: {
                     __args: {
                         arg1: 20,
-                        arg2: new VariableType("variable1"),
+                        arg2: new VariableType('variable1'),
                     },
                     id: true,
                     title: true,
@@ -82,20 +82,20 @@ describe("jsonToGraphQLQuery() - combinations", () => {
         );
     });
 
-    it("correctly converts query with variables/name/alias/args/variable/fragments", () => {
+    it('correctly converts query with variables/name/alias/args/variable/fragments', () => {
         const query = {
             query: {
-                __name: "NewName",
+                __name: 'NewName',
                 __variables: {
-                    someString: "String!",
+                    someString: 'String!',
                     varWithDefault: 'String = "default_value"',
                 },
                 one: {
-                    __aliasFor: "Posts",
+                    __aliasFor: 'Posts',
                     __args: {
                         arg1: 20,
-                        arg2: new VariableType("someString"),
-                        status: new EnumType("PUBLISHED"),
+                        arg2: new VariableType('someString'),
+                        status: new EnumType('PUBLISHED'),
                     },
                     name: false,
                     id: true,
@@ -112,10 +112,10 @@ describe("jsonToGraphQLQuery() - combinations", () => {
                 Post: {
                     __args: {
                         arg1: 20,
-                        arg2: new VariableType("someString"),
+                        arg2: new VariableType('someString'),
                     },
                     __on: {
-                        __typeName: "ConfigurablePost",
+                        __typeName: 'ConfigurablePost',
                         id: true,
                     },
                     name: false,
@@ -132,7 +132,7 @@ describe("jsonToGraphQLQuery() - combinations", () => {
                 Posts: {
                     __args: {
                         arg1: 20,
-                        arg2: new VariableType("someString"),
+                        arg2: new VariableType('someString'),
                     },
                     name: false,
                     id: true,
