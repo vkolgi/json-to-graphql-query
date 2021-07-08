@@ -1,6 +1,10 @@
 
 # json-to-graphql-query Changelog
 
+## 2.1.0
+
+* Added support for named queries/mutations (thanks @peng-huang-cc). 
+
 ## 2.0.2
 
 * Update package dependencies to handle security vulnerabilties

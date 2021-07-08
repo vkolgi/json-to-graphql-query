@@ -39,6 +39,7 @@ Supported Options:
  * Support for simple directives (such as `@client`) via [`__directives`](#query-with-directives)
  * Support for one or more inline fragments via [`__on.__typeName`](#query-with-inline-fragments)
  * Support for full fragments via [`__all_on`](#query-with-inline-fragments)
+ * Support for named queries/mutations via [`__name`](#query-with-name)
 
 ## Recent Changes
 
@@ -492,7 +493,6 @@ query NewName ($variable1: String!, $variableWithDefault: String = "default_valu
 
 ## TO-DO List
 
- * Support Named Queries / Mutations
  * Probably some other things!...
 
 Pull requests welcome!
