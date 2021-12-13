@@ -115,14 +115,14 @@ function convertQuery(node: any, level: number, output: [string, number][], opti
                     let argsStr = '';
                     let dirsStr = '';
                     if (directivesExist) {
-                        // TODO: Add support for multiple directives on one node.
                         const numDirectives = Object.keys(value.__directives).length;
-                        if (numDirectives > 1) {
-                            throw new Error(`Too many directives. The object/key ` +
-                                `'${Object.keys(value)[0]}' had ${numDirectives} directives, ` +
-                                `but only 1 directive per object/key is supported at this time.`);
-                        }
-                        dirsStr = `@${buildDirectives(value.__directives)}`;
+                        Object.keys(value.__directives).forEach(
+                            (directive, index) => {
+                                dirsStr += `@${buildDirectives({
+                                    [directive]: value.__directives[directive],
+                                })}${index < numDirectives - 1 ? ' ' : ''}`;
+                            }
+                        );
                     }
                     if (argsExist) {
                         argsStr = `(${buildArgs(value.__args)})`;
