@@ -150,7 +150,7 @@ describe('jsonToGraphQLQuery() - directives', () => {
 
     // TODO: Need this test still? How to handle variables unless $ declared explicitly?
     // it('converts a JavaScript object into a valid query, including single directives ' +
-    // 'with args, so long as any variables used are enclosed in a string with '$' included', () => {
+    // 'with args, so long as any variables used are enclosed in a string with "$" included', () => {
     //     interface ILooseObject { [key: string]: any; }
     //     let input: ILooseObject = {
     //         someOtherAbritraryKey: {
@@ -171,7 +171,7 @@ describe('jsonToGraphQLQuery() - directives', () => {
 
     // TODO
     // it('converts a JavaScript object into a valid query, including *multiple* directives ' +
-    // 'with args, so long as any variables used are enclosed in a string with '$' included', () => {
+    // 'with args, so long as any variables used are enclosed in a string with "$" included', () => {
     // });
 
     // TODO
