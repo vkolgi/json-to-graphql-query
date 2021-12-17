@@ -115,14 +115,9 @@ function convertQuery(node: any, level: number, output: [string, number][], opti
                     let argsStr = '';
                     let dirsStr = '';
                     if (directivesExist) {
-                        const numDirectives = Object.keys(value.__directives).length;
-                        Object.keys(value.__directives).forEach(
-                            (directive, index) => {
-                                dirsStr += `@${buildDirectives({
-                                    [directive]: value.__directives[directive],
-                                })}${index < numDirectives - 1 ? ' ' : ''}`;
-                            }
-                        );
+                        dirsStr = Object.entries(value.__directives)
+                            .map(item => `@${buildDirectives({[item[0]]:item[1]})}`)
+                            .join(' ')
                     }
                     if (argsExist) {
                         argsStr = `(${buildArgs(value.__args)})`;
