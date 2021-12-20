@@ -116,7 +116,7 @@ function convertQuery(node: any, level: number, output: [string, number][], opti
                     let dirsStr = '';
                     if (directivesExist) {
                         dirsStr = Object.entries(value.__directives)
-                            .map(item => `@${buildDirectives({[item[0]]:item[1]})}`)
+                            .map(item => `@${buildDirectives({[item[0]]: item[1]})}`)
                             .join(' ')
                     }
                     if (argsExist) {
