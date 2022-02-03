@@ -6,9 +6,10 @@
     "packageRules": [
         {
           "matchDepTypes": ["devDependencies"],
-          "matchUpdateTypes": ["patch", "minor"],
+          "matchUpdateTypes": ["patch", "minor", "major"],
           "groupName": "devDependencies (non-major)",
-          "groupSlug": "dev-dependencies"  
+          "groupSlug": "dev-dependencies",
+           "labels": ["dev-dependencies"]
         },
         {
           "matchPackagePatterns": ["eslint"],
@@ -20,5 +21,4 @@
         }
     ],
     "bumpVersion": "patch"
-    
 }
