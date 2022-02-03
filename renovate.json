@@ -19,6 +19,6 @@
           "addLabels": ["optional"]
         }
     ],
-    "bumpVersion": "patch",
+    "bumpVersion": "patch"
     
 }
