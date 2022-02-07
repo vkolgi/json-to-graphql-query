@@ -1,6 +1,10 @@
 
 # json-to-graphql-query Changelog
 
+## 2.2.2
+
+* Updated dev dependencies.
+
 ## 2.2.0
 
 * Added support for multiple directives per node (thanks @MorganDbs).
