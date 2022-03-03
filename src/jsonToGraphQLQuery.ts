@@ -123,7 +123,7 @@ function convertQuery(node: any, level: number, output: [string, number][], opti
                         argsStr = `(${buildArgs(value.__args)})`;
                     }
                     const spacer = directivesExist && argsExist ? ' ' : '';
-                    token = `${token} ${dirsStr}${spacer}${argsStr}`;
+                    token = `${token} ${argsStr}${spacer}${dirsStr}`;
                 }
 
                 output.push([token + (subFields || partialFragmentsExist || fullFragmentsExist ? ' {' : ''), level]);
