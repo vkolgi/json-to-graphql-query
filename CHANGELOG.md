@@ -1,6 +1,10 @@
 
 # json-to-graphql-query Changelog
 
+## 2.2.3
+
+* Fixing args / directives order according to gql specs (thanks @MorganDbs)
+
 ## 2.2.2
 
 * Updated dev dependencies.
