@@ -62,7 +62,7 @@ function buildDirectives(dirsObj: any): string {
         return `${directiveName}(${args.join(', ')})`;
     }
     else {
-        throw new Error(`Unsupported type for directive: ${typeof directiveValue}. Types allowed: object (not empty), boolean.\n` +
+        throw new Error(`Unsupported type for directive: ${typeof directiveValue}. Types allowed: object , boolean.\n` +
             `Offending object: ${JSON.stringify(dirsObj)}`);
     }
 }
