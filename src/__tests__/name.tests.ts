@@ -54,6 +54,32 @@ describe('jsonToGraphQLQuery() - name', () => {
 });
 
 describe('jsonToGraphQLQuery() - combinations', () => {
+    it('correctly converts query with name/ empty variables', () => {
+        const query = {
+            query: {
+                __name: 'NewName',
+                __variables: {},
+                Posts: {
+                    __args: {
+                        arg1: 20,
+                        arg2: new VariableType('variable1'),
+                    },
+                    id: true,
+                    title: true,
+                },
+            },
+        };
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
+            `query NewName {
+    Posts (arg1: 20, arg2: $variable1) {
+        id
+        title
+    }
+}`
+        );
+    });
+
+
     it('correctly converts query with name/variables', () => {
         const query = {
             query: {

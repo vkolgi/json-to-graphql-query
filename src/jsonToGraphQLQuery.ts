@@ -50,7 +50,7 @@ function buildVariables(varsObj: any): string {
 function buildDirectives(dirsObj: any): string {
     const directiveName = Object.keys(dirsObj)[0];
     const directiveValue = dirsObj[directiveName];
-    if (typeof directiveValue === 'boolean') {
+    if (typeof directiveValue === 'boolean' || (typeof directiveValue === 'object' && Object.keys(directiveValue).length === 0)) {
         return directiveName;
     }
     else if (typeof directiveValue === 'object') {
@@ -62,7 +62,7 @@ function buildDirectives(dirsObj: any): string {
         return `${directiveName}(${args.join(', ')})`;
     }
     else {
-        throw new Error(`Unsupported type for directive: ${typeof directiveValue}. Types allowed: object, boolean.\n` +
+        throw new Error(`Unsupported type for directive: ${typeof directiveValue}. Types allowed: object (not empty), boolean.\n` +
             `Offending object: ${JSON.stringify(dirsObj)}`);
     }
 }
@@ -108,7 +108,7 @@ function convertQuery(node: any, level: number, output: [string, number][], opti
                     token = `${token}: ${value.__aliasFor}`;
                 }
 
-                if (typeof value.__variables === 'object') {
+                if (typeof value.__variables === 'object' && Object.keys(value.__variables).length > 0) {
                     token = `${token} (${buildVariables(value.__variables)})`;
                 }
                 else if (argsExist || directivesExist) {
