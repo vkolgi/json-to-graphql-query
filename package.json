@@ -1,6 +1,6 @@
 {
     "name": "json-to-graphql-query",
-    "version": "2.2.2",
+    "version": "2.2.3",
     "main": "lib/index.js",
     "license": "MIT",
     "scripts": {
