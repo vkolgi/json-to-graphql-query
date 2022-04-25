@@ -105,6 +105,37 @@ describe('jsonToGraphQLQuery() - directives', () => {
         );
     });
 
+    it('converts a simple query with args and multiple directives but a directive has an empty object', () => {
+        const query = {
+            query: {
+                Posts: {
+                    __args: {
+                        where: {
+                            id: 10,
+                        },
+                        orderBy: 'flibble',
+                    },
+                    __directives: {
+                        client: true,
+                        withArgs: {},
+                    },
+                    id: true,
+                    title: true,
+                    post_date: true,
+                },
+            },
+        } as any;
+        expect(jsonToGraphQLQuery(query, { pretty: true })).to.equal(
+            `query {
+    Posts (where: {id: 10}, orderBy: "flibble") @client @withArgs {
+        id
+        title
+        post_date
+    }
+}`
+        );
+    });
+
     it('converts a complex query with multiple directives', () => {
         const query = {
             query: {
