@@ -1,6 +1,13 @@
 
 # json-to-graphql-query Changelog
 
+## 2.2.5
+
+* Updated README to include simple mutation example
+* Bumped minimatch library version as a security vulnerability remedy
+* Include src files in published package (thanks @esetnik)
+* fix: empty object serialization (thanks @blaky)
+
 ## 2.2.4
 
 * Handled empty variables and empty directives (thanks @MorganDbs)
