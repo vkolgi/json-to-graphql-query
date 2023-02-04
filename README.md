@@ -489,6 +489,31 @@ query NewName ($variable1: String!, $variableWithDefault: String = "default_valu
         title
     }
 }
+
+```
+### Mutation example
+
+```typescript
+import { jsonToGraphQLQuery, VariableType } from 'json-to-graphql-query';
+
+const mutation = {
+    mutation: {
+        delete_post: {
+            __args: { id: 1234 },
+            id: true,
+        }
+    }
+};
+const graphql_query = jsonToGraphQLQuery(mutation, { pretty: true });
+```
+
+Resulting `graphql_query`
+```graphql
+mutation {
+    delete_post (id: 1234) {
+            id
+    }
+}
 ```
 
 ## TO-DO List
