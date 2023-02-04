@@ -11,8 +11,8 @@ describe('jsonToGraphQLQuery() - mutations', () => {
                     __args: { id: 1234 },
                     id: true,
                 }
-            } 
-        }
+            }
+        };
         expect(jsonToGraphQLQuery(mutation, { pretty: true })).to.equal(
         `mutation {
     delete_post (id: 1234) {
