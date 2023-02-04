@@ -90,6 +90,12 @@ function convertQuery(node: any, level: number, output: [string, number][], opti
                     }
                 }
 
+                // Check if the object would be empty
+                if (value && Object.keys(value).filter(k => value[k] !== false || options.includeFalsyKeys).length === 0) {
+                    // If so, we don't include it into the query
+                    return;
+                }
+
                 const fieldCount = Object.keys(value)
                     .filter((keyCount) => filterNonConfigFields(keyCount, options.ignoreFields!)).length;
                 const subFields = fieldCount > 0;
@@ -116,7 +122,7 @@ function convertQuery(node: any, level: number, output: [string, number][], opti
                     let dirsStr = '';
                     if (directivesExist) {
                         dirsStr = Object.entries(value.__directives)
-                            .map(item => `@${buildDirectives({[item[0]]: item[1]})}`)
+                            .map(item => `@${buildDirectives({ [item[0]]: item[1] })}`)
                             .join(' ')
                     }
                     if (argsExist) {

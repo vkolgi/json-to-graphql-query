@@ -46,4 +46,40 @@ describe('jsonToGraphQLQuery() - falsy keys', () => {
         );
     });
 
+    it('does not include object with only false keys', () => {
+        const query = {
+            query: {
+                Posts: {
+                    id: true,
+                    name: false
+                },
+                Lorem: {
+                    id: false
+                },
+                Ipsum: true
+            }
+        };
+        expect(jsonToGraphQLQuery(query)).to.equal(
+            'query { Posts { id } Ipsum }'
+        );
+    });
+
+    it('does include object with only false keys if includeFalsyKeys is true', () => {
+        const query = {
+            query: {
+                Posts: {
+                    id: true,
+                    name: false
+                },
+                Lorem: {
+                    id: false
+                },
+                Ipsum: true
+            }
+        };
+        expect(jsonToGraphQLQuery(query, { includeFalsyKeys: true })).to.equal(
+            'query { Posts { id name } Lorem { id } Ipsum }'
+        );
+    });
+
 });
