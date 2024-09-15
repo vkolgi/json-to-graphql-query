@@ -1,5 +1,11 @@
 # json-to-graphql-query Changelog
 
+## 2.3.0
+
+- chore(migrate): Migrated from tslint(deprecated) to eslint configuration
+- ci: Added lint:fix command to fix eslint errors
+- chore: Added complimenting prettier configuration
+
 ## 2.2.6
 
 - fix: Handle deep nested falsy values in result #68
