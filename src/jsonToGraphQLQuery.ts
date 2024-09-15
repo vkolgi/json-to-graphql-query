@@ -1,16 +1,16 @@
-import { EnumType } from "./types/EnumType";
-import { VariableType } from "./types/VariableType";
+import { EnumType } from './types/EnumType';
+import { VariableType } from './types/VariableType';
 
 export const configFields = [
-    "__args",
-    "__alias",
-    "__aliasFor",
-    "__variables",
-    "__directives",
-    "__on",
-    "__all_on",
-    "__typeName",
-    "__name",
+    '__args',
+    '__alias',
+    '__aliasFor',
+    '__variables',
+    '__directives',
+    '__on',
+    '__all_on',
+    '__typeName',
+    '__name'
 ];
 
 function stringify(obj_from_json: any): string {
@@ -22,17 +22,17 @@ function stringify(obj_from_json: any): string {
         return `$${obj_from_json.value}`;
     }
     // Cheers to Derek: https://stackoverflow.com/questions/11233498/json-stringify-without-quotes-on-properties
-    else if (typeof obj_from_json !== "object" || obj_from_json === null) {
+    else if (typeof obj_from_json !== 'object' || obj_from_json === null) {
         // not an object, stringify using native function
         return JSON.stringify(obj_from_json);
     } else if (Array.isArray(obj_from_json)) {
-        return `[${obj_from_json.map((item) => stringify(item)).join(", ")}]`;
+        return `[${obj_from_json.map((item) => stringify(item)).join(', ')}]`;
     }
     // Implements recursive object serialization according to JSON spec
     // but without quotes around the keys.
     const props: string = Object.keys(obj_from_json)
         .map((key) => `${key}: ${stringify(obj_from_json[key])}`)
-        .join(", ");
+        .join(', ');
 
     return `{${props}}`;
 }
@@ -42,7 +42,7 @@ function buildArgs(argsObj: any): string {
     for (const argName in argsObj) {
         args.push(`${argName}: ${stringify(argsObj[argName])}`);
     }
-    return args.join(", ");
+    return args.join(', ');
 }
 
 function buildVariables(varsObj: any): string {
@@ -50,35 +50,35 @@ function buildVariables(varsObj: any): string {
     for (const varName in varsObj) {
         args.push(`$${varName}: ${varsObj[varName]}`);
     }
-    return args.join(", ");
+    return args.join(', ');
 }
 
 function buildDirectives(dirsObj: any): string {
     const directiveName = Object.keys(dirsObj)[0];
     const directiveValue = dirsObj[directiveName];
     if (
-        typeof directiveValue === "boolean" ||
-        (typeof directiveValue === "object" &&
+        typeof directiveValue === 'boolean' ||
+        (typeof directiveValue === 'object' &&
             Object.keys(directiveValue).length === 0)
     ) {
         return directiveName;
-    } else if (typeof directiveValue === "object") {
+    } else if (typeof directiveValue === 'object') {
         const args = [];
         for (const argName in directiveValue) {
-            const argVal = stringify(directiveValue[argName]).replace(/"/g, "");
+            const argVal = stringify(directiveValue[argName]).replace(/"/g, '');
             args.push(`${argName}: ${argVal}`);
         }
-        return `${directiveName}(${args.join(", ")})`;
+        return `${directiveName}(${args.join(', ')})`;
     } else {
         throw new Error(
             `Unsupported type for directive: ${typeof directiveValue}. Types allowed: object, boolean.\n` +
-                `Offending object: ${JSON.stringify(dirsObj)}`,
+                `Offending object: ${JSON.stringify(dirsObj)}`
         );
     }
 }
 
 function getIndent(level: number): string {
-    return Array(level * 4 + 1).join(" ");
+    return Array(level * 4 + 1).join(' ');
 }
 
 function filterNonConfigFields(fieldName: string, ignoreFields: string[]) {
@@ -93,16 +93,16 @@ function convertQuery(
     node: any,
     level: number,
     output: [string, number][],
-    options: IJsonToGraphQLOptions,
+    options: IJsonToGraphQLOptions
 ) {
     Object.keys(node)
         .filter((key) => filterNonConfigFields(key, options.ignoreFields!))
         .forEach((key) => {
             let value = node[key];
-            if (typeof value === "object") {
+            if (typeof value === 'object') {
                 if (Array.isArray(value)) {
                     value = value.find(
-                        (item) => item && typeof item === "object",
+                        (item) => item && typeof item === 'object'
                     );
                     if (!value) {
                         output.push([`${key}`, level]);
@@ -114,7 +114,7 @@ function convertQuery(
                 if (
                     value &&
                     Object.keys(value).filter(
-                        (k) => value[k] !== false || options.includeFalsyKeys,
+                        (k) => value[k] !== false || options.includeFalsyKeys
                     ).length === 0
                 ) {
                     // If so, we don't include it into the query
@@ -122,46 +122,46 @@ function convertQuery(
                 }
 
                 const fieldCount = Object.keys(value).filter((keyCount) =>
-                    filterNonConfigFields(keyCount, options.ignoreFields!),
+                    filterNonConfigFields(keyCount, options.ignoreFields!)
                 ).length;
                 const subFields = fieldCount > 0;
                 const argsExist =
-                    typeof value.__args === "object" &&
+                    typeof value.__args === 'object' &&
                     Object.keys(value.__args).length > 0;
-                const directivesExist = typeof value.__directives === "object";
+                const directivesExist = typeof value.__directives === 'object';
                 const fullFragmentsExist = value.__all_on instanceof Array;
-                const partialFragmentsExist = typeof value.__on === "object";
+                const partialFragmentsExist = typeof value.__on === 'object';
 
                 let token = `${key}`;
 
-                if (typeof value.__name === "string") {
+                if (typeof value.__name === 'string') {
                     token = `${token} ${value.__name}`;
                 }
 
-                if (typeof value.__aliasFor === "string") {
+                if (typeof value.__aliasFor === 'string') {
                     token = `${token}: ${value.__aliasFor}`;
                 }
 
                 if (
-                    typeof value.__variables === "object" &&
+                    typeof value.__variables === 'object' &&
                     Object.keys(value.__variables).length > 0
                 ) {
                     token = `${token} (${buildVariables(value.__variables)})`;
                 } else if (argsExist || directivesExist) {
-                    let argsStr = "";
-                    let dirsStr = "";
+                    let argsStr = '';
+                    let dirsStr = '';
                     if (directivesExist) {
                         dirsStr = Object.entries(value.__directives)
                             .map(
                                 (item) =>
-                                    `@${buildDirectives({ [item[0]]: item[1] })}`,
+                                    `@${buildDirectives({ [item[0]]: item[1] })}`
                             )
-                            .join(" ");
+                            .join(' ');
                     }
                     if (argsExist) {
                         argsStr = `(${buildArgs(value.__args)})`;
                     }
-                    const spacer = directivesExist && argsExist ? " " : "";
+                    const spacer = directivesExist && argsExist ? ' ' : '';
                     token = `${token} ${argsStr}${spacer}${dirsStr}`;
                 }
 
@@ -170,9 +170,9 @@ function convertQuery(
                         (subFields ||
                         partialFragmentsExist ||
                         fullFragmentsExist
-                            ? " {"
-                            : ""),
-                    level,
+                            ? ' {'
+                            : ''),
+                    level
                 ]);
                 convertQuery(value, level + 1, output, options);
 
@@ -191,14 +191,14 @@ function convertQuery(
                             inlineFragment,
                             level + 2,
                             output,
-                            options,
+                            options
                         );
-                        output.push(["}", level + 1]);
+                        output.push(['}', level + 1]);
                     });
                 }
 
                 if (subFields || partialFragmentsExist || fullFragmentsExist) {
-                    output.push(["}", level]);
+                    output.push(['}', level]);
                 }
             } else if (options.includeFalsyKeys === true || value) {
                 output.push([`${key}`, level]);
@@ -214,13 +214,13 @@ export interface IJsonToGraphQLOptions {
 
 export function jsonToGraphQLQuery(
     query: any,
-    options: IJsonToGraphQLOptions = {},
+    options: IJsonToGraphQLOptions = {}
 ) {
-    if (!query || typeof query != "object") {
-        throw new Error("query object not specified");
+    if (!query || typeof query != 'object') {
+        throw new Error('query object not specified');
     }
     if (Object.keys(query).length == 0) {
-        throw new Error("query object has no data");
+        throw new Error('query object has no data');
     }
     if (!(options.ignoreFields instanceof Array)) {
         options.ignoreFields = [];
@@ -231,16 +231,16 @@ export function jsonToGraphQLQuery(
 
     queryLines = dropEmptyObjects(queryLines);
 
-    let output = "";
+    let output = '';
     queryLines.forEach(([line, level]) => {
         if (options.pretty) {
             if (output) {
-                output += "\n";
+                output += '\n';
             }
             output += getIndent(level) + line;
         } else {
             if (output) {
-                output += " ";
+                output += ' ';
             }
             output += line;
         }
@@ -251,36 +251,36 @@ export function jsonToGraphQLQuery(
 type InputItem = [string, number];
 type OutputItem = [string, number];
 
-interface Context {
+interface IContext {
     indent: number;
     text: string | null;
     isEmpty: boolean;
-    contents: Array<Context | string>;
+    contents: Array<IContext | string>;
 }
 
 function dropEmptyObjects(inputList: Array<InputItem>): Array<OutputItem> {
-    let rootContext: Context = {
+    const rootContext: IContext = {
         indent: -1,
         text: null,
         isEmpty: true,
-        contents: [],
+        contents: []
     };
 
-    let stack: Context[] = [rootContext];
+    const stack: IContext[] = [rootContext];
 
     for (let [text, indent] of inputList) {
         text = text.trim();
-        if (text.endsWith("{")) {
-            let context: Context = {
+        if (text.endsWith('{')) {
+            const context: IContext = {
                 indent: indent,
                 text: text,
                 isEmpty: true,
-                contents: [],
+                contents: []
             };
             stack[stack.length - 1].contents.push(context);
             stack.push(context);
-        } else if (text === "}") {
-            let context = stack.pop()!;
+        } else if (text === '}') {
+            const context = stack.pop()!;
             if (context.isEmpty) {
                 // Remove the context from its parent's contents
                 stack[stack.length - 1].contents.pop();
@@ -295,15 +295,15 @@ function dropEmptyObjects(inputList: Array<InputItem>): Array<OutputItem> {
         }
     }
 
-    let output: OutputItem[] = [];
+    const output: OutputItem[] = [];
 
-    function traverse(context: Context): void {
-        for (let item of context.contents) {
-            if (typeof item === "object") {
+    function traverse(context: IContext): void {
+        for (const item of context.contents) {
+            if (typeof item === 'object') {
                 // It's a context
                 output.push([item.text!, item.indent]);
                 traverse(item);
-                output.push(["}", item.indent]);
+                output.push(['}', item.indent]);
             } else {
                 // It's a field (string)
                 output.push([item, context.indent + 1]);

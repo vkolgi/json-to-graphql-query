@@ -1,165 +1,165 @@
-import { expect } from "chai";
-import { jsonToGraphQLQuery } from "../";
+import { expect } from 'chai';
+import { jsonToGraphQLQuery } from '../';
 
-describe("jsonToGraphQLQuery() - falsy keys", () => {
-    it("does not include fields which value is false", () => {
+describe('jsonToGraphQLQuery() - falsy keys', () => {
+    it('does not include fields which value is false', () => {
         const query = {
             query: {
                 Posts: {
                     __args: {
-                        a: false,
+                        a: false
                     },
                     id: true,
-                    name: false,
+                    name: false
                 },
                 Lorem: {
-                    id: true,
+                    id: true
                 },
-                Ipsum: false,
-            },
+                Ipsum: false
+            }
         };
         expect(jsonToGraphQLQuery(query)).to.equal(
-            "query { Posts (a: false) { id } Lorem { id } }",
+            'query { Posts (a: false) { id } Lorem { id } }'
         );
     });
 
-    it("includes fields with falsy values if includeFalsyKeys is true", () => {
+    it('includes fields with falsy values if includeFalsyKeys is true', () => {
         const query = {
             query: {
                 Posts: {
                     __args: {
-                        a: false,
+                        a: false
                     },
-                    id: "",
-                    name: "",
+                    id: '',
+                    name: ''
                 },
                 Lorem: {
-                    id: "",
+                    id: ''
                 },
-                Ipsum: false,
-            },
+                Ipsum: false
+            }
         };
         expect(jsonToGraphQLQuery(query, { includeFalsyKeys: true })).to.equal(
-            "query { Posts (a: false) { id name } Lorem { id } Ipsum }",
+            'query { Posts (a: false) { id name } Lorem { id } Ipsum }'
         );
     });
 
-    it("does not include object with only false keys", () => {
+    it('does not include object with only false keys', () => {
         const query = {
             query: {
                 Posts: {
                     id: true,
-                    name: false,
+                    name: false
                 },
                 Lorem: {
-                    id: false,
+                    id: false
                 },
-                Ipsum: true,
-            },
+                Ipsum: true
+            }
         };
         expect(jsonToGraphQLQuery(query)).to.equal(
-            "query { Posts { id } Ipsum }",
+            'query { Posts { id } Ipsum }'
         );
     });
 
-    it("does include object with only false keys if includeFalsyKeys is true", () => {
+    it('does include object with only false keys if includeFalsyKeys is true', () => {
         const query = {
             query: {
                 Posts: {
                     id: true,
-                    name: false,
+                    name: false
                 },
                 Lorem: {
-                    id: false,
+                    id: false
                 },
-                Ipsum: true,
-            },
+                Ipsum: true
+            }
         };
         expect(jsonToGraphQLQuery(query, { includeFalsyKeys: true })).to.equal(
-            "query { Posts { id name } Lorem { id } Ipsum }",
+            'query { Posts { id name } Lorem { id } Ipsum }'
         );
     });
 
-    it("Includes the nested object if includeFalsyKeys is true", () => {
+    it('Includes the nested object if includeFalsyKeys is true', () => {
         const query = {
             query: {
                 Posts: {
                     id: true,
-                    name: false,
+                    name: false
                 },
                 Lorem: {
                     Ipsum: {
-                        name: false,
-                    },
-                },
-            },
+                        name: false
+                    }
+                }
+            }
         };
         expect(jsonToGraphQLQuery(query, { includeFalsyKeys: true })).to.equal(
-            "query { Posts { id name } Lorem { Ipsum { name } } }",
+            'query { Posts { id name } Lorem { Ipsum { name } } }'
         );
     });
 
-    it("does not include the object if nested object has falsy values", () => {
+    it('does not include the object if nested object has falsy values', () => {
         const query = {
             query: {
                 Posts: {
                     id: true,
-                    name: false,
+                    name: false
                 },
                 Lorem: {
                     Ipsum: {
-                        name: false,
-                    },
-                },
-            },
+                        name: false
+                    }
+                }
+            }
         };
-        expect(jsonToGraphQLQuery(query)).to.equal("query { Posts { id } }");
+        expect(jsonToGraphQLQuery(query)).to.equal('query { Posts { id } }');
     });
 
-    it("skip objects when deeply nested keys contain falsy values", () => {
+    it('skip objects when deeply nested keys contain falsy values', () => {
         const query = {
             query: {
                 id: true,
                 Posts: {
                     id: true,
-                    name: false,
+                    name: false
                 },
                 Lorem: {
                     Ipsum: {
                         Dolor: {
                             Sit: {
-                                amet: false,
-                            },
-                        },
+                                amet: false
+                            }
+                        }
                     },
                     details: {
                         name: false,
-                        address: true,
-                    },
-                },
-            },
+                        address: true
+                    }
+                }
+            }
         };
         expect(jsonToGraphQLQuery(query)).to.equal(
-            "query { id Posts { id } Lorem { details { address } } }",
+            'query { id Posts { id } Lorem { details { address } } }'
         );
     });
 
-    it("Include values if nested object has falsy values and includeFalsyKeys is true", () => {
+    it('Include values if nested object has falsy values and includeFalsyKeys is true', () => {
         const query = {
             query: {
                 Posts: {
                     id: true,
-                    name: false,
+                    name: false
                 },
                 Lorem: {
                     Ipsum: {
-                        name: false,
-                    },
-                },
-            },
+                        name: false
+                    }
+                }
+            }
         };
         expect(jsonToGraphQLQuery(query, { includeFalsyKeys: true })).to.equal(
-            "query { Posts { id name } Lorem { Ipsum { name } } }",
+            'query { Posts { id name } Lorem { Ipsum { name } } }'
         );
     });
 });
