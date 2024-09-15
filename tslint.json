@@ -1,31 +1,29 @@
 {
-    "extends": [
-      "tslint:latest"
-    ],
+    "extends": ["tslint:latest"],
     "rules": {
-       "trailing-comma": [false],
-       "object-literal-sort-keys": false,
-       "object-literal-key-quotes": [true, "as-needed"],
-       "ordered-imports": false,
-       "no-console": [false],
-       "no-unused-new": false,
-       "triple-equals": false,
-       "one-line": [false, "check-catch", "check-finally", "check-else"],
-       "only-arrow-functions": [false],
-       "quotemark": [true, "single"],
-       "forin": false,
-       "variable-name": [false],
-       "no-empty": false,
-       "no-implicit-dependencies": false,
-       "no-string-literal": false,
-       "no-submodule-imports": false,
-       "object-literal-shorthand": false,
-       "member-access": [false],
-       "prefer-conditional-expression": false,
-       "prefer-for-of": false,
-       "member-ordering": [false],
-       "prefer-object-spread": false,
-       "eofline": false
+        "trailing-comma": [false],
+        "object-literal-sort-keys": false,
+        "object-literal-key-quotes": [true, "as-needed"],
+        "ordered-imports": false,
+        "no-console": [false],
+        "no-unused-new": false,
+        "triple-equals": false,
+        "one-line": [false, "check-catch", "check-finally", "check-else"],
+        "only-arrow-functions": [false],
+        "quotemark": [true, "single"],
+        "forin": false,
+        "variable-name": [false],
+        "no-empty": false,
+        "no-implicit-dependencies": false,
+        "no-string-literal": false,
+        "no-submodule-imports": false,
+        "object-literal-shorthand": false,
+        "member-access": [false],
+        "prefer-conditional-expression": false,
+        "prefer-for-of": false,
+        "member-ordering": [false],
+        "prefer-object-spread": false,
+        "eofline": false,
+        "array-type": false
     }
-  }
-  
+}
