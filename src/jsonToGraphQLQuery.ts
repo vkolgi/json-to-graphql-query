@@ -10,7 +10,7 @@ export const configFields = [
     '__on',
     '__all_on',
     '__typeName',
-    '__name'
+    '__name',
 ];
 
 function stringify(obj_from_json: any): string {
@@ -172,7 +172,7 @@ function convertQuery(
                         fullFragmentsExist
                             ? ' {'
                             : ''),
-                    level
+                    level,
                 ]);
                 convertQuery(value, level + 1, output, options);
 
@@ -263,7 +263,7 @@ function dropEmptyObjects(inputList: Array<InputItem>): Array<OutputItem> {
         indent: -1,
         text: null,
         isEmpty: true,
-        contents: []
+        contents: [],
     };
 
     const stack: IContext[] = [rootContext];
@@ -275,7 +275,7 @@ function dropEmptyObjects(inputList: Array<InputItem>): Array<OutputItem> {
                 indent: indent,
                 text: text,
                 isEmpty: true,
-                contents: []
+                contents: [],
             };
             stack[stack.length - 1].contents.push(context);
             stack.push(context);
